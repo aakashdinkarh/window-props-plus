@@ -1,0 +1,18 @@
+{
+	"manifest_version": 3,
+	"name": "Update Local Storage",
+	"version": "1.0",
+	"permissions": ["scripting"],
+    "action": {
+        "default_popup": "index.html"
+    },
+	"content_scripts": [
+		{
+			"matches": ["http://*/*", "https://*/*"],
+			"js": ["scripts/contentScripts/attachDataToWindow.js"],
+			"run_at": "document_start",
+			"world": "MAIN"
+		}
+	],
+	"host_permissions": ["http://*/*", "https://*/*"]
+}
