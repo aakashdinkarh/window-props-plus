@@ -28,11 +28,11 @@ document.addEventListener('click', handleClickOutside);
     
     if(INITIAL_DATA !== null) {
         renderDataStructure(INITIAL_DATA);
-        function eventListenerForSaveButton () {
-            updateLocalStorage(LOCAL_STORAGE_DATA_KEY, INITIAL_DATA);
+        function eventListenerForSaveButton (data) {
+            updateLocalStorage(LOCAL_STORAGE_DATA_KEY, data);
         }
         
-        saveToLocalStorageButton.addEventListener('click', eventListenerForSaveButton)
+        saveToLocalStorageButton.addEventListener('click', () => eventListenerForSaveButton(INITIAL_DATA))
         
         document.addEventListener('DOMContentLoaded', function () {
             loadAceEditor();

@@ -49,8 +49,6 @@ const windowExtensions = evaluateData(getLocalStorageData());
 
 if (windowExtensions && typeof windowExtensions === 'object') {
     for(const key in windowExtensions) {
-        console.log('key: ', key)
-        console.log('value: ', windowExtensions[key])
         window[key] = windowExtensions[key];
     }
 }
