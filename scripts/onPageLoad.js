@@ -1,5 +1,6 @@
 const dialogBox = document.getElementsByClassName('dialog')[0];
 const addPropertyForm = document.getElementById('add-property-form');
+const saveToLocalStorageBtnContainer = document.getElementsByClassName('save-to-local-storage-btn-container')[0];
 const saveToLocalStorageButton = document.getElementById('save-to-local-storage');
 
 const LOCAL_STORAGE_DATA_KEY = 'local_data_state';
@@ -34,7 +35,7 @@ document.addEventListener('click', handleClickOutside);
         saveToLocalStorageButton.addEventListener('click', eventListenerForSaveButton)
         
         document.addEventListener('DOMContentLoaded', function () {
-            // loadAceEditor();
+            loadAceEditor();
         });
     } else {
         saveToLocalStorageButton.style.display = 'none';
