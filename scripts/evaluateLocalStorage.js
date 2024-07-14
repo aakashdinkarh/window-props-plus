@@ -66,6 +66,11 @@ async function evaluateLocalStorage() {
         return null;
     } catch (e) {
         console.error(e);
+        if(typeof e.message === 'string' && e.message.includes('Cannot access')) {
+
+          errorMessage = 'Cannot access this website, NOT ALLOWED'
+          return null;
+        }
         if(e.message) alert(e.message);
 
         const agree = handleConfirmation();
