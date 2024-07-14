@@ -28,7 +28,6 @@ async function loadScript(src, index) {
 async function loadAceEditor() {
     // Ace Editor CDN
     if(isAceEditorAdded) {
-        console.log('early return')
         return Promise.resolve(true);
     }
 
