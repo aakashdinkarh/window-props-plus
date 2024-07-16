@@ -30,7 +30,7 @@ function getActionContainer(data, parentData = null, index = null) {
 	const actionContainer = document.createElement('div');
 	actionContainer.className = 'action-container';
 
-	const showAddActionButton = data.type !== 'string';
+	const showAddActionButton = !['string', 'number'].includes(data.type);
 	const showRemoveActionButton = parentData != null;
 
 	if (showAddActionButton) {
@@ -88,13 +88,26 @@ function getActionContainer(data, parentData = null, index = null) {
 	return actionContainer;
 }
 
-function renderPrimaryDataType(data) {
+function renderStringDataType(data) {
 	const aceEditor = document.createElement('div');
 	aceEditor.className = `ace-editor ace_${data.type}-mode`;
 	aceEditor.textContent = data.value[0];
 
 	embedAceEditor(aceEditor, data);
 	return aceEditor;
+}
+
+function renderNumberDataType(data) {
+	const inputElement = document.createElement('input');
+
+	inputElement.type = 'number';
+	inputElement.value = data.value[0];
+	inputElement.className = `custom_ace-editor ace_${data.type}-mode`;
+	inputElement.onchange = (e) => {
+		data.value = [e.target.value];
+	}
+
+	return inputElement;
 }
 
 function renderFunctionData(data) {
@@ -177,7 +190,10 @@ function renderObjectData(data, parentData = null, index = null) {
 		const childContent = renderFunctionData(data);
 		sectionElement.append(...childContent);
 	} else if ('string' === data.type) {
-		const childContent = renderPrimaryDataType(data);
+		const childContent = renderStringDataType(data);
+		sectionElement.append(childContent);
+	} else if ('number' === data.type) {
+		const childContent = renderNumberDataType(data);
 		sectionElement.append(childContent);
 	}
 

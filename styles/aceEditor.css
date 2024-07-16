@@ -3,10 +3,41 @@
     width: 100%;
     border-radius: 4px;
     border: 1px solid #333;
-
+    
     --color-string: #f1fa8c;
+}
+
+.custom_ace-editor {
+    background-color: var(--color-bg-ace-editor);
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-family: monospace;
+
+    --color-number: #bc93f9;
+    --color-bg-ace-editor: #282a36;
+}
+
+/* Hide the spinner buttons in WebKit browsers (Chrome, Safari) */
+input[type=number].custom_ace-editor::-webkit-outer-spin-button,
+input[type=number].custom_ace-editor::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Hide the spinner buttons in Firefox */
+input[type=number].custom_ace-editor {
+    -moz-appearance: textfield;
+}
+
+.custom_ace-editor:focus {
+    outline: none;
 }
 
 .ace_editor.ace_string-mode .ace_content .ace_text-layer {
     color: var(--color-string);
+}
+
+.custom_ace-editor.ace_number-mode {
+    color: var(--color-number);
 }

@@ -21,6 +21,9 @@
 		if (data.type === 'string') {
 			return String(data.value[0]);
 		}
+		if (data.type === 'number') {
+			return Number(data.value[0]);
+		}
         return undefined;
     }
     
