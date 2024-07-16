@@ -18,6 +18,9 @@
             }, {});
             return dataToAdd;
         }
+		if (data.type === 'string') {
+			return String(data.value[0]);
+		}
         return undefined;
     }
     
