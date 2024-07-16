@@ -1,15 +1,12 @@
 .ace-editor {
     position: relative;
     width: 100%;
-    height: 100px;
     border-radius: 4px;
     border: 1px solid #333;
+
+    --color-string: #f1fa8c;
 }
 
-.ace-editor.primary-data-type {
-    height: 16px;
-}
-
-.ace-editor.primary-data-type.data-type-string {
-    height: 32px;
+.ace_editor.ace_string-mode .ace_content .ace_text-layer {
+    color: var(--color-string);
 }
