@@ -1,0 +1,64 @@
+
+.icon {
+    background-color: #d2d2d2;
+    /* background-color: var(--color-blue-bg); */
+    width: 128;
+    height: 128;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.icon .circle {
+    width: 110;
+    height: 110;
+    border: 2px solid #959595;
+    /* border: 2px solid var(--color-blue1); */
+    border-radius: 50%;
+    background-color: var(--color-white);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+}
+
+.icon .circle .chip {
+    width: 44;
+    height: 56;
+    background-color: #818181;
+    clip-path: polygon(0 0, 64% 0, 100% 20%, 100% 100%, 0 100%);
+    position: relative;
+}
+
+.icon .circle .disable-bar {
+    width: calc(100% + 2px);
+    height: 20px;
+    background-color: #4e4e4ed9;
+    position: absolute;
+    transform: rotate(-45deg);
+}
+
+.small-gap {
+    width: 5px;
+    height: 7px;
+    background-color: var(--color-white);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+}
+.small-gap:nth-child(2) {
+    left: 12px;
+}
+.small-gap:nth-child(3) {
+    left: 20px;
+}
+
+.large-gap {
+    width: 36px;
+    height: 20px;
+    background-color: var(--color-white);
+    position: absolute;
+    bottom: 4;
+    left: 4;
+}
