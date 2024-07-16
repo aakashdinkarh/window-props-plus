@@ -33,5 +33,8 @@
 			"world": "MAIN"
 		}
 	],
-	"host_permissions": ["http://*/*", "https://*/*"]
+	"host_permissions": ["http://*/*", "https://*/*"],
+	"background": {
+		"service_worker": "scripts/serviceWorker/background.js"
+	}
 }
