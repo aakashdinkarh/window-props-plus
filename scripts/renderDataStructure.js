@@ -30,45 +30,50 @@ function getActionContainer(data, parentData = null, index = null) {
 	const actionContainer = document.createElement('div');
 	actionContainer.className = 'action-container';
 
-	// add action button
-	const addActionButton = document.createElement('button');
-	addActionButton.className = 'action-button add';
-	addActionButton.textContent = '+';
-	addActionButton.title = 'Add object property';
+	const showAddActionButton = data.type !== 'string';
+	const showRemoveActionButton = parentData != null;
 
-	addActionButton.onclick = () => {
-		if (!data || !data.value || !Array.isArray(data.value)) {
-			return;
-		}
+	if (showAddActionButton) {
+		// add action button
+		const addActionButton = document.createElement('button');
+		addActionButton.className = 'action-button add';
+		addActionButton.textContent = '+';
+		addActionButton.title = 'Add object property';
 
-		if (data.type === 'function') {
-			// directly add argument field
-			const functionBody = data.value.pop();
-			data.value.push('');
-			data.value.push(functionBody);
-			renderDataStructure();
-		} else {
-			// show dialog to choose object or function as new property
-			showDialog(addActionButton);
-			addPropertyForm.onsubmit = (e) => {
-				e.preventDefault();
-				const formData = new FormData(e.target);
-				const propertyName = formData.get('property-name');
-				const propertyType = formData.get('property-type');
+		addActionButton.onclick = () => {
+			if (!data || !data.value || !Array.isArray(data.value)) {
+				return;
+			}
 
-				data.value.push({
-					type: propertyType,
-					key: propertyName,
-					value: [],
-				});
-				closeDialogBox();
+			if (data.type === 'function') {
+				// directly add argument field
+				const functionBody = data.value.pop();
+				data.value.push('');
+				data.value.push(functionBody);
 				renderDataStructure();
-			};
-		}
-	};
-	actionContainer.appendChild(addActionButton);
+			} else {
+				// show dialog to choose object or function as new property
+				showDialog(addActionButton);
+				addPropertyForm.onsubmit = (e) => {
+					e.preventDefault();
+					const formData = new FormData(e.target);
+					const propertyName = formData.get('property-name');
+					const propertyType = formData.get('property-type');
 
-	if (parentData != null) {
+					data.value.push({
+						type: propertyType,
+						key: propertyName,
+						value: [],
+					});
+					closeDialogBox();
+					renderDataStructure();
+				};
+			}
+		};
+		actionContainer.appendChild(addActionButton);
+	}
+
+	if (showRemoveActionButton) {
 		// remove action button
 		const removeActionButton = document.createElement('button');
 		removeActionButton.className = 'action-button remove';
