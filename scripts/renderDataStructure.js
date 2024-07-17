@@ -84,7 +84,7 @@ function getActionContainer(data, parentData = null, index = null) {
 					data.value.push({
 						type: propertyType,
 						key: propertyName,
-						value: isBooleanPropertyType ? ['true'] : [],
+						value: defaultValue,
 					});
 					closeDialogBox();
 					renderDataStructure();
