@@ -3,8 +3,11 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Update Local Storage Extension</title>
-		<link href="style.css" rel="stylesheet" />
-		<!-- <link href="iconStyle.css" rel="stylesheet" /> -->
+		<link href="styles/style.css" rel="stylesheet" />
+		<link href="styles/addPropertyForm.css" rel="stylesheet" />
+		<link href="styles/aceEditor.css" rel="stylesheet" />
+		<link href="styles/saveToLocalStorage.css" rel="stylesheet" />
+		<!-- <link href="styles/iconStyle.css" rel="stylesheet" /> -->
 		<script src="scripts/aceEditorHelpers.js"></script>
 		<script src="scripts/evaluateLocalStorage.js"></script>
 		<script src="scripts/renderDataStructure.js"></script>
@@ -16,17 +19,17 @@
 		<dialog class="dialog">
             <form id="add-property-form">
                 <input name="property-name" placeholder="Property name" type="text" required />
-                <div>
-                    <label>
-                        <input type="radio" name="property-type" value="object" required />
-                        Object
-                    </label>
-                    <label>
-                        <input type="radio" name="property-type" value="function" required />
-                        Function
-                    </label>
+                <div class="property-type-container">
+                    Property Type:
+                    <select name="property-type">
+                        <option value="object">Object</option>
+                        <option value="function">Function</option>
+                        <option value="string">String</option>
+                        <option value="number">Number</option>
+                        <option value="boolean">Boolean</option>
+                    </select>
                 </div>
-                <div class="add-property-form-container" >
+                <div class="form-action-container">
                     <button type="reset">Cancel</button>
                     <button type="submit">Save</button>
                 </div>
