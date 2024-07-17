@@ -76,7 +76,10 @@ function getActionContainer(data, parentData = null, index = null) {
 					const formData = new FormData(e.target);
 					const propertyName = formData.get('property-name');
 					const propertyType = formData.get('property-type');
-					const isBooleanPropertyType = propertyType === 'boolean';
+
+					let defaultValue = [];
+					if (propertyType === 'boolean') defaultValue = ['true'];
+					else if (propertyType === 'number') defaultValue = ['0'];
 
 					data.value.push({
 						type: propertyType,
