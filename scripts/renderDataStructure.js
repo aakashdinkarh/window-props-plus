@@ -1,9 +1,21 @@
 function showDialog(addActionButton) {
 	closeDialogBox();
-	const { right, bottom } = addActionButton.getBoundingClientRect();
-	dialogBox.style.top = `${bottom + window.scrollY}px`;
-	dialogBox.style.left = `${right + window.scrollX}px`;
-	dialogBox.show();
+
+	const { height: dialogHeight, width: dialogWidth } = dialogBox.getBoundingClientRect();
+	const containerHeight = document.body.scrollHeight;
+	const containerWidth = document.body.scrollWidth;
+
+	// Calculate position relative to the container[body]
+	let { right, bottom } = addActionButton.getBoundingClientRect();
+	bottom += document.body.scrollTop;
+	right += document.body.scrollLeft;
+
+	// Adjust position if dialog goes out of the right or bottom edge
+	if (bottom + dialogHeight > containerHeight) bottom = containerHeight - dialogHeight;
+	if (right + dialogWidth > containerWidth) right = containerWidth - dialogWidth;
+
+	dialogBox.style.top = `${bottom}px`;
+	dialogBox.style.left = `${right}px`;
 	dialogBox.classList.add('open');
 }
 
@@ -49,21 +61,22 @@ function getActionContainer(data, parentData = null, index = null) {
 
 	const showAddActionButton = !['string', 'number', 'boolean'].includes(data.type);
 	const showRemoveActionButton = parentData != null;
+	const isFunctionDataType = data.type === 'function';
 
 	if (showAddActionButton) {
 		// add action button
 		const addActionButton = document.createElement('button');
-		addActionButton.className = 'action-button add';
+		addActionButton.className = `action-button add${isFunctionDataType ? ' function' : ''}`;
 		addActionButton.textContent = '+';
-		addActionButton.title = 'Add object property';
+		addActionButton.title = isFunctionDataType ? 'Add new argument' : 'Add object property';
 
 		addActionButton.onclick = () => {
 			if (!data || !data.value || !Array.isArray(data.value)) {
 				return;
 			}
 
-			if (data.type === 'function') {
-				// directly add argument field
+			if (isFunctionDataType) {
+				// push the new argument in the start
 				const functionBody = data.value.pop();
 				data.value.push('');
 				data.value.push(functionBody);
@@ -232,9 +245,7 @@ function renderObjectData(data, parentData = null, index = null) {
 }
 
 function renderDataStructure(data = INITIAL_DATA) {
-	const mainElement = document.getElementsByTagName('main')[0];
-
 	const dataStructure = renderObjectData(data);
 
-	mainElement.replaceChildren(dataStructure);
+	mainElement.replaceChildren(dataStructure, dialogBox);
 }

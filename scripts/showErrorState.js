@@ -2,8 +2,6 @@ let errorMessage = 'Seems like there is something wrong with your data saved for
 errorMessage += '\n Please refresh and accept the default data from prompt to continue.'
 
 function showErrorState(){
-	const mainElement = document.getElementsByTagName('main')[0];
-
     const errorHeadingElement = document.createElement('h2');
     const errorElement = document.createElement('p');
 

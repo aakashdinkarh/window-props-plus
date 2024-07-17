@@ -1,3 +1,4 @@
+const mainElement = document.getElementsByTagName('main')[0];
 const dialogBox = document.getElementsByClassName('dialog')[0];
 const addPropertyForm = document.getElementById('add-property-form');
 const saveToLocalStorageBtnContainer = document.getElementsByClassName('save-to-local-storage-btn-container')[0];
@@ -8,7 +9,6 @@ let INITIAL_DATA = {}
 
 function closeDialogBox() {
     dialogBox.classList.remove('open');
-    dialogBox.close();
     addPropertyForm.reset();
 }
 function cancelForm() {

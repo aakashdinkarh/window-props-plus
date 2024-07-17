@@ -1,128 +1,130 @@
-body, html {
-    margin: 0;
-    font-family: sans-serif;
-    background-color: #fff;
-    padding: 8px;
+html {
+	margin: 0;
+	overflow: auto;
 
-    /* todo: fix this later */
-    min-width: 500px;
-    min-height: 300px;
+	--color-blue1: rgb(0, 114, 255);
+	--color-blue2: rgb(0, 62, 138);
+	--color-blue-bg: rgba(0, 114, 255, 10%);
+	--color-white: #f8f8f3;
+	--color-success: #558b2f;
+	--color-error: #ff2f2f;
+	--color-warn: #fbc02d;
+	--color-dialog-bg: #c2d8ff;
+	--color-dialog-border: #ccc;
+}
 
-    max-height: 300px;
-    overflow: auto;
-
-
-    --color-blue1: rgb(0, 114, 255);
-    --color-blue2: rgb(0, 62, 138);
-    --color-blue-bg: rgba(0, 114, 255, 10%);
-    --color-white: #f8f8f3;
-    --color-success: #558B2F;
-    --color-error: #ff2f2f;
-    --color-warn: #FBC02D;
-    --color-dialog-bg: #c2d8ff;
-    --color-dialog-border: #ccc;
+body {
+	margin: 0;
+	font-family: sans-serif;
+	background-color: #fff;
+	position: relative;
+	min-width: 500px;
+	height: 300px;
+	padding: 8px;
+	padding-bottom: 0;
+	overflow: auto;
 }
 button {
-    cursor: pointer;
-}
-
-main {
-    position: relative;
+	cursor: pointer;
 }
 
 section {
-    background-color: var(--color-blue-bg);
-    border: 2px solid var(--color-blue1);
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 10px;
+	background-color: var(--color-blue-bg);
+	border: 2px solid var(--color-blue1);
+	border-radius: 8px;
+	padding: 10px;
+	margin-bottom: 10px;
 }
 
 .container {
-    display: flex;
-    margin-bottom: 10px;
+	display: flex;
+	margin-bottom: 10px;
 }
 
 .content {
-    background-color: var(--color-blue-bg);
-    border: 1px solid var(--color-blue1);
-    border-radius: 8px;
-    padding: 4px 6px;
+	background-color: var(--color-blue-bg);
+	border: 1px solid var(--color-blue1);
+	border-radius: 8px;
+	padding: 4px 6px;
 }
 .content > span.type {
-    color: var(--color-blue2);
-    margin-right: 4px;
+	color: var(--color-blue2);
+	margin-right: 4px;
 }
 .content > input {
-    background-color: transparent;
-    border: none;
+	background-color: transparent;
+	border: none;
 }
 .content > input:focus {
-    outline: none;
+	outline: none;
 }
 
 .action-container {
-    display: flex;
-    margin-left: 16px;
-    align-items: center;
-    position: relative;
+	display: flex;
+	margin-left: 16px;
+	align-items: center;
+	position: relative;
 }
 .action-button {
-    width: 20px;
-    height: 20px;
-    border: none;
-    border-radius: 50%;
-    font-size: medium;
-    padding: 0;
-    text-align: center;
-    background-color: var(--color-blue1);
-    color: var(--color-white);
+	width: 20px;
+	height: 20px;
+	border: none;
+	border-radius: 50%;
+	font-size: medium;
+	padding: 0;
+	text-align: center;
+	background-color: var(--color-blue1);
+	color: var(--color-white);
 }
 .action-button.remove {
-    margin-left: 4px;
+	margin-left: 4px;
 }
 .action-button:not(:hover) {
-    opacity: 0.8;
+	opacity: 0.8;
 }
 .action-button {
-    transition: opacity 0.3s;
+	transition: opacity 0.3s;
 }
 
 .dialog {
-    border: 1px solid var(--color-dialog-border);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 6px 4px rgba(0, 0, 0, 0.2);
-    margin: 0;
-    background-color: var(--color-dialog-bg);
-    position: absolute; /* Allow absolute positioning */
+	border: 1px solid var(--color-dialog-border);
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0px 2px 6px 4px rgba(0, 0, 0, 0.2);
+	margin: 0;
+	background-color: var(--color-dialog-bg);
+	position: absolute;
+	top:0;
+	left:0;
+	visibility: hidden;
 }
 dialog.open {
-    animation: slide-up 0.1s ease-out forwards;
+	visibility: visible;
+	animation: slide-up 0.1s ease-out forwards;
 }
 
 @keyframes slide-up {
-    from {
-        transform: translateY(10px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0px);
-        opacity: 1;
-    }
+	from {
+		transform: translateY(10px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0px);
+		opacity: 1;
+	}
 }
 
 .save-to-local-storage-btn-container {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    overflow: hidden;
-    border-radius: 4px;
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	overflow: hidden;
+	border-radius: 4px;
 }
 
 .error-heading {
-    color: var(--color-error);
+	color: var(--color-error);
 }
 .error-message {
-    color: var(--color-error);
+	color: var(--color-error);
 }
