@@ -47,7 +47,7 @@ function getActionContainer(data, parentData = null, index = null) {
 	const actionContainer = document.createElement('div');
 	actionContainer.className = 'action-container';
 
-	const showAddActionButton = !['string', 'number'].includes(data.type);
+	const showAddActionButton = !['string', 'number', 'boolean'].includes(data.type);
 	const showRemoveActionButton = parentData != null;
 
 	if (showAddActionButton) {
