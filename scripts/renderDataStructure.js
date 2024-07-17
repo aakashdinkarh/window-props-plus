@@ -7,6 +7,23 @@ function showDialog(addActionButton) {
 	dialogBox.classList.add('open');
 }
 
+function getBoolOption(val, data) {
+	const boolOption = document.createElement('button');
+	boolOption.className = `custom_ace-editor bool_option ${data.value[0] === val ? 'selected' : ''}`;
+	boolOption.innerText = val.toUpperCase();
+
+	if (val === 'true') boolOption.style.marginRight = '8px';
+
+	boolOption.onclick = () => {
+		const otherBoolOption = val === 'true' ? boolOption.nextSibling : boolOption.previousSibling;
+		boolOption.classList.add('selected');
+		otherBoolOption.classList.remove('selected');
+		data.value = [val];
+	};
+
+	return boolOption;
+}
+
 function getFuncArgumentActionContainer(data, index) {
 	// action buttons container
 	const actionContainer = document.createElement('div');
@@ -59,11 +76,12 @@ function getActionContainer(data, parentData = null, index = null) {
 					const formData = new FormData(e.target);
 					const propertyName = formData.get('property-name');
 					const propertyType = formData.get('property-type');
+					const isBooleanPropertyType = propertyType === 'boolean';
 
 					data.value.push({
 						type: propertyType,
 						key: propertyName,
-						value: [],
+						value: isBooleanPropertyType ? ['true'] : [],
 					});
 					closeDialogBox();
 					renderDataStructure();
@@ -105,9 +123,16 @@ function renderNumberDataType(data) {
 	inputElement.className = `custom_ace-editor ace_${data.type}-mode`;
 	inputElement.onchange = (e) => {
 		data.value = [e.target.value];
-	}
+	};
 
 	return inputElement;
+}
+
+function renderBooleanDataType(data) {
+	const boolOptionTrue = getBoolOption('true', data);
+	const boolOptionFalse = getBoolOption('false', data);
+
+	return [boolOptionTrue, boolOptionFalse];
 }
 
 function renderFunctionData(data) {
@@ -195,6 +220,9 @@ function renderObjectData(data, parentData = null, index = null) {
 	} else if ('number' === data.type) {
 		const childContent = renderNumberDataType(data);
 		sectionElement.append(childContent);
+	} else if ('boolean' === data.type) {
+		const childContent = renderBooleanDataType(data);
+		sectionElement.append(...childContent);
 	}
 
 	return sectionElement;
