@@ -66,7 +66,7 @@ function getActionContainer(data, parentData = null, index = null) {
 	if (showAddActionButton) {
 		// add action button
 		const addActionButton = document.createElement('button');
-		addActionButton.className = 'action-button add';
+		addActionButton.className = `action-button add${isFunctionDataType ? ' function' : ''}`;
 		addActionButton.textContent = '+';
 		addActionButton.title = isFunctionDataType ? 'Add new argument' : 'Add object property';
 
@@ -75,8 +75,8 @@ function getActionContainer(data, parentData = null, index = null) {
 				return;
 			}
 
-			if (data.type === 'function') {
-				// directly add argument field
+			if (isFunctionDataType) {
+				// push the new argument in the start
 				const functionBody = data.value.pop();
 				data.value.push('');
 				data.value.push(functionBody);
