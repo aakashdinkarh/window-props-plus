@@ -61,13 +61,14 @@ function getActionContainer(data, parentData = null, index = null) {
 
 	const showAddActionButton = !['string', 'number', 'boolean'].includes(data.type);
 	const showRemoveActionButton = parentData != null;
+	const isFunctionDataType = data.type === 'function';
 
 	if (showAddActionButton) {
 		// add action button
 		const addActionButton = document.createElement('button');
 		addActionButton.className = 'action-button add';
 		addActionButton.textContent = '+';
-		addActionButton.title = 'Add object property';
+		addActionButton.title = isFunctionDataType ? 'Add new argument' : 'Add object property';
 
 		addActionButton.onclick = () => {
 			if (!data || !data.value || !Array.isArray(data.value)) {
