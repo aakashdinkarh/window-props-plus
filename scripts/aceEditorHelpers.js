@@ -49,6 +49,8 @@ async function embedAceEditor(element, dataObject) {
 
 	if (dataObject.type === 'string') {
 		editor.session.setMode('ace/mode/text');
+	} else if (dataObject.type === 'array') {
+		editor.session.setMode('ace/mode/json');
 	} else {
 		editor.session.setMode('ace/mode/javascript');
 	}
