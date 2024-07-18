@@ -1,0 +1,6 @@
+# This is a comment
+# The '*' pattern will match all files in the repository
+* @aakashdinkarh
+
+# The 'docs/' pattern will match all files in the docs directory
+# docs/   @username2 @team2
