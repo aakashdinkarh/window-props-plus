@@ -6,4 +6,3 @@ define("ace/snippets",["require","exports","module","ace/lib/dom","ace/lib/oop",
         }
     });
 })();
-            

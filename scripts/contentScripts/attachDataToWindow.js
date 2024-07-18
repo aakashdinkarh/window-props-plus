@@ -24,7 +24,7 @@
 		if (data.type === 'number') {
 			return Number(data.value[0]);
 		}
-		if (data.type === 'boolean') {
+		if (data.type === 'boolean' || data.type === 'array') {
 			return JSON.parse(data.value[0]);
 		}
 		return undefined;

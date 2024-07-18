@@ -1,7 +1,8 @@
 let isAceEditorAdded = false;
 
+// cdnPrefix = https://cdnjs.cloudflare.com/ajax/libs/ace/1.35.3/
 const aceEditorScripts = ['scripts/aceEditor/ace.js', 'scripts/aceEditor/ext-language_tools.js'];
-const aceEditorScriptsLoadedStatus = [false, false, false];
+const aceEditorScriptsLoadedStatus = [false, false];
 
 async function loadScript(src, index) {
 	return new Promise((resolve, reject) => {
@@ -48,6 +49,8 @@ async function embedAceEditor(element, dataObject) {
 
 	if (dataObject.type === 'string') {
 		editor.session.setMode('ace/mode/text');
+	} else if (dataObject.type === 'array') {
+		editor.session.setMode('ace/mode/json');
 	} else {
 		editor.session.setMode('ace/mode/javascript');
 	}

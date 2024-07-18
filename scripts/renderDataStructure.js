@@ -59,7 +59,7 @@ function getActionContainer(data, parentData = null, index = null) {
 	const actionContainer = document.createElement('div');
 	actionContainer.className = 'action-container';
 
-	const showAddActionButton = !['string', 'number', 'boolean'].includes(data.type);
+	const showAddActionButton = !['string', 'number', 'boolean', 'array'].includes(data.type);
 	const showRemoveActionButton = parentData != null;
 	const isFunctionDataType = data.type === 'function';
 
@@ -120,6 +120,15 @@ function getActionContainer(data, parentData = null, index = null) {
 	}
 
 	return actionContainer;
+}
+
+function renderArrayDataType(data) {
+	const aceEditor = document.createElement('div');
+	aceEditor.className = `ace-editor ace_${data.type}-mode`;
+	aceEditor.textContent = data.value[0];
+	
+	embedAceEditor(aceEditor, data);
+	return aceEditor;
 }
 
 function renderStringDataType(data) {
@@ -230,6 +239,9 @@ function renderObjectData(data, parentData = null, index = null) {
 	} else if (data.type === 'function') {
 		const childContent = renderFunctionData(data);
 		sectionElement.append(...childContent);
+	} else if ('array' === data.type) {
+		const childContent = renderArrayDataType(data);
+		sectionElement.append(childContent);
 	} else if ('string' === data.type) {
 		const childContent = renderStringDataType(data);
 		sectionElement.append(childContent);
