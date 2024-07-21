@@ -1,7 +1,7 @@
 let isAceEditorAdded = false;
 
 // cdnPrefix = https://cdnjs.cloudflare.com/ajax/libs/ace/1.35.3/
-const aceEditorScripts = ['scripts/aceEditor/ace.js', 'scripts/aceEditor/ext-language_tools.js', 'scripts/aceEditor/parseErrors/json.js'];
+const aceEditorScripts = ['scripts/aceEditor/ace.js', 'scripts/aceEditor/ext-language_tools.js'];
 const aceEditorScriptsLoadedStatus = [false, false];
 
 async function loadScript(src, index) {
@@ -39,21 +39,9 @@ async function loadAceEditor() {
 	}
 }
 
-async function embedAceEditor(element, dataObject) {
-	// Initialize Ace Editor
-	const isAceEditorAdded = await loadAceEditor();
-
-	if (!isAceEditorAdded) return;
-
+function editorCommonOptions(element) {
 	const editor = ace.edit(element);
 
-	if (dataObject.type === 'string') {
-		editor.session.setMode('ace/mode/text');
-	} else if (dataObject.type === 'array') {
-		editor.session.setMode('ace/mode/json');
-	} else {
-		editor.session.setMode('ace/mode/javascript');
-	}
 	editor.setTheme('ace/theme/dracula');
 	// Set the default tab size
 	editor.session.setTabSize(2);
@@ -75,13 +63,70 @@ async function embedAceEditor(element, dataObject) {
 		loadWorkerFromBlob: false,
 	});
 
+	return editor;
+}
+
+function editorHandleString(editor) {
+	editor.session.setMode('ace/mode/text');
+}
+
+function handleJsonParsing(editor){
+	const error = parseValueForJSON(editor.getValue());
+	editor.getSession().setAnnotations(error);
+}
+function editorHandleArray(editor) {
+	editor.session.setMode('ace/mode/json');
+
+	// initial parsing
+	handleJsonParsing(editor)
+
+	editor.session.on('change', function () {
+		handleJsonParsing(editor)
+	});
+}
+
+function handleJavaScriptParsing(editor){
+	// write here for JavaScript
+	if (window.Worker) {
+		// const worker = new Worker(chrome.runtime.getURL('scripts/aceEditor/parseErrors/js.js'));
+	} else {
+		console.log('Your browser doesn\'t support web workers.');
+	}
+}
+function editorHandleFunction(editor) {
+	editor.session.setMode('ace/mode/javascript');
+
+	// initial parsing
+	handleJavaScriptParsing(editor);
+
+	editor.session.on('change', function () {
+		handleJavaScriptParsing(editor)
+	});
+}
+
+async function embedAceEditor(element, dataObject) {
+	// Initialize Ace Editor
+	const isAceEditorAdded = await loadAceEditor();
+
+	if (!isAceEditorAdded) return;
+
+	const editor = editorCommonOptions(element);
 	editor.session.on('change', function () {
 		const content = editor.getValue();
 		dataObject.value = [content];
-
-		if (dataObject.type === 'array') {
-			const error = parseValueForJSON(content);
-			editor.getSession().setAnnotations(error);
-		}
 	});
+
+	switch (dataObject.type) {
+		case 'string': 
+			editorHandleString(editor);
+			break;
+		case 'array':
+			editorHandleArray(editor);
+			break;
+		case 'function':
+			editorHandleFunction(editor);
+			break;
+		default :
+			break;
+	}
 }
