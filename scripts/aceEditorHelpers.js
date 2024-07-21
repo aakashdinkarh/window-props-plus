@@ -1,7 +1,7 @@
 let isAceEditorAdded = false;
 
 // cdnPrefix = https://cdnjs.cloudflare.com/ajax/libs/ace/1.35.3/
-const aceEditorScripts = ['scripts/aceEditor/ace.js', 'scripts/aceEditor/ext-language_tools.js'];
+const aceEditorScripts = ['scripts/aceEditor/ace.js', 'scripts/aceEditor/ext-language_tools.js', 'scripts/aceEditor/parseErrors/json.js'];
 const aceEditorScriptsLoadedStatus = [false, false];
 
 async function loadScript(src, index) {
@@ -71,10 +71,17 @@ async function embedAceEditor(element, dataObject) {
 		readOnly: false,
 		fontSize: '12px',
 		wrap: false,
+		useWorker: false, // not able to use workers due to CSP of chrome extensions
+		loadWorkerFromBlob: false,
 	});
 
 	editor.session.on('change', function () {
 		const content = editor.getValue();
 		dataObject.value = [content];
+
+		if (dataObject.type === 'array') {
+			const error = parseValueForJSON(content);
+			editor.getSession().setAnnotations(error);
+		}
 	});
 }
