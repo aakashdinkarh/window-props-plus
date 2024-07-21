@@ -85,22 +85,49 @@ function editorHandleArray(editor) {
 	});
 }
 
-function handleJavaScriptParsing(editor){
-	// write here for JavaScript
+function getJavaScriptWorker(editor){
+	let worker = null;
 	if (window.Worker) {
-		// const worker = new Worker(chrome.runtime.getURL('scripts/aceEditor/parseErrors/js.js'));
+		try {
+			worker = new Worker(chrome.runtime.getURL('scripts/aceEditor/parseErrors/js.js'));
+	
+			worker.onmessage = (e) => {
+				try {
+					const { event, data: error } = e.data || {};
+					if (event === 'annotate' && error) {
+						editor.getSession().setAnnotations(error);
+					}
+				} catch (err) {
+					console.error('Error getting or setting syntax errors for the editor', err);
+				}
+			}
+		} catch (err) {
+			console.error('Error setting up web worker for ace-editor', err);
+		}
 	} else {
 		console.log('Your browser doesn\'t support web workers.');
 	}
+
+	return worker;
 }
 function editorHandleFunction(editor) {
 	editor.session.setMode('ace/mode/javascript');
 
+	const worker = getJavaScriptWorker(editor);
+
 	// initial parsing
-	handleJavaScriptParsing(editor);
+	worker && worker.postMessage({ 
+		type: 'event',
+		event: 'initial',
+		editorValue: editor.getValue(),
+	})
 
 	editor.session.on('change', function () {
-		handleJavaScriptParsing(editor)
+		worker && worker.postMessage({ 
+			type: 'event',
+			event: 'change',
+			editorValue: editor.getValue(),
+		})
 	});
 }
 
