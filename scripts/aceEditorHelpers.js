@@ -59,76 +59,9 @@ function editorCommonOptions(element) {
 		readOnly: false,
 		fontSize: '12px',
 		wrap: false,
-		useWorker: false, // not able to use workers due to CSP of chrome extensions
-		loadWorkerFromBlob: false,
 	});
 
 	return editor;
-}
-
-function editorHandleString(editor) {
-	editor.session.setMode('ace/mode/text');
-}
-
-function handleJsonParsing(editor){
-	const error = parseValueForJSON(editor.getValue());
-	editor.getSession().setAnnotations(error);
-}
-function editorHandleArray(editor) {
-	editor.session.setMode('ace/mode/json');
-
-	// initial parsing
-	handleJsonParsing(editor)
-
-	editor.session.on('change', function () {
-		handleJsonParsing(editor)
-	});
-}
-
-function getJavaScriptWorker(editor){
-	let worker = null;
-	if (window.Worker) {
-		try {
-			worker = new Worker(chrome.runtime.getURL('scripts/aceEditor/parseErrors/js.js'));
-	
-			worker.onmessage = (e) => {
-				try {
-					const { event, data: error } = e.data || {};
-					if (event === 'annotate' && error) {
-						editor.getSession().setAnnotations(error);
-					}
-				} catch (err) {
-					console.error('Error getting or setting syntax errors for the editor', err);
-				}
-			}
-		} catch (err) {
-			console.error('Error setting up web worker for ace-editor', err);
-		}
-	} else {
-		console.log('Your browser doesn\'t support web workers.');
-	}
-
-	return worker;
-}
-function editorHandleFunction(editor) {
-	editor.session.setMode('ace/mode/javascript');
-
-	const worker = getJavaScriptWorker(editor);
-
-	// initial parsing
-	worker && worker.postMessage({ 
-		type: 'event',
-		event: 'initial',
-		editorValue: editor.getValue(),
-	})
-
-	editor.session.on('change', function () {
-		worker && worker.postMessage({ 
-			type: 'event',
-			event: 'change',
-			editorValue: editor.getValue(),
-		})
-	});
 }
 
 async function embedAceEditor(element, dataObject) {
@@ -136,8 +69,11 @@ async function embedAceEditor(element, dataObject) {
 	const isAceEditorAdded = await loadAceEditor();
 
 	if (!isAceEditorAdded) return;
-
+	
+	// avoiding CSP of loading worker via blob
+	ace.config.set('loadWorkerFromBlob', false);
 	const editor = editorCommonOptions(element);
+
 	editor.session.on('change', function () {
 		const content = editor.getValue();
 		dataObject.value = [content];
@@ -145,13 +81,13 @@ async function embedAceEditor(element, dataObject) {
 
 	switch (dataObject.type) {
 		case 'string': 
-			editorHandleString(editor);
+			editor.session.setMode('ace/mode/text');
 			break;
 		case 'array':
-			editorHandleArray(editor);
+			editor.session.setMode('ace/mode/json');
 			break;
 		case 'function':
-			editorHandleFunction(editor);
+			editor.session.setMode('ace/mode/javascript');
 			break;
 		default :
 			break;
