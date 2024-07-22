@@ -19,6 +19,17 @@ function showDialog(addActionButton) {
 	dialogBox.classList.add('open');
 }
 
+const defaultValuesMapping = {
+	function: `// this is a sample function
+const a = 5;
+const b = 6;
+return a + b;`,
+	array: JSON.stringify(['Dinkar', 24, true, { role: 'Frontend Engineer' }]),
+	string: 'This is sample string',
+	number: '24',
+	boolean: 'true',
+}
+
 function getBoolOption(val, data) {
 	const boolOption = document.createElement('button');
 	boolOption.className = `custom_ace-editor bool_option ${data.value[0] === val ? 'selected' : ''}`;
@@ -90,9 +101,7 @@ function getActionContainer(data, parentData = null, index = null) {
 					const propertyName = formData.get('property-name');
 					const propertyType = formData.get('property-type');
 
-					let defaultValue = [];
-					if (propertyType === 'boolean') defaultValue = ['true'];
-					else if (propertyType === 'number') defaultValue = ['0'];
+					const defaultValue = propertyType in defaultValuesMapping ? [defaultValuesMapping[propertyType]] : [];
 
 					data.value.push({
 						type: propertyType,
