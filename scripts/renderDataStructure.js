@@ -268,5 +268,5 @@ function renderObjectData(data, parentData = null, index = null) {
 function renderDataStructure(data = INITIAL_DATA) {
 	const dataStructure = renderObjectData(data);
 
-	mainElement.replaceChildren(dataStructure, dialogBox);
+	mainElement.replaceChildren(dataStructure);
 }

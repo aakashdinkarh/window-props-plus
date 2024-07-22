@@ -69,7 +69,7 @@ async function embedAceEditor(element, dataObject) {
 	const isAceEditorAdded = await loadAceEditor();
 
 	if (!isAceEditorAdded) return;
-	
+
 	// avoiding CSP of loading worker via blob
 	ace.config.set('loadWorkerFromBlob', false);
 	const editor = editorCommonOptions(element);
@@ -80,7 +80,7 @@ async function embedAceEditor(element, dataObject) {
 	});
 
 	switch (dataObject.type) {
-		case 'string': 
+		case 'string':
 			editor.session.setMode('ace/mode/text');
 			break;
 		case 'array':
@@ -89,7 +89,7 @@ async function embedAceEditor(element, dataObject) {
 		case 'function':
 			editor.session.setMode('ace/mode/javascript');
 			break;
-		default :
+		default:
 			break;
 	}
 }
