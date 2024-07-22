@@ -39,21 +39,9 @@ async function loadAceEditor() {
 	}
 }
 
-async function embedAceEditor(element, dataObject) {
-	// Initialize Ace Editor
-	const isAceEditorAdded = await loadAceEditor();
-
-	if (!isAceEditorAdded) return;
-
+function editorCommonOptions(element) {
 	const editor = ace.edit(element);
 
-	if (dataObject.type === 'string') {
-		editor.session.setMode('ace/mode/text');
-	} else if (dataObject.type === 'array') {
-		editor.session.setMode('ace/mode/json');
-	} else {
-		editor.session.setMode('ace/mode/javascript');
-	}
 	editor.setTheme('ace/theme/dracula');
 	// Set the default tab size
 	editor.session.setTabSize(2);
@@ -73,8 +61,35 @@ async function embedAceEditor(element, dataObject) {
 		wrap: false,
 	});
 
+	return editor;
+}
+
+async function embedAceEditor(element, dataObject) {
+	// Initialize Ace Editor
+	const isAceEditorAdded = await loadAceEditor();
+
+	if (!isAceEditorAdded) return;
+	
+	// avoiding CSP of loading worker via blob
+	ace.config.set('loadWorkerFromBlob', false);
+	const editor = editorCommonOptions(element);
+
 	editor.session.on('change', function () {
 		const content = editor.getValue();
 		dataObject.value = [content];
 	});
+
+	switch (dataObject.type) {
+		case 'string': 
+			editor.session.setMode('ace/mode/text');
+			break;
+		case 'array':
+			editor.session.setMode('ace/mode/json');
+			break;
+		case 'function':
+			editor.session.setMode('ace/mode/javascript');
+			break;
+		default :
+			break;
+	}
 }
