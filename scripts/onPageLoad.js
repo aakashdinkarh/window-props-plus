@@ -3,6 +3,7 @@ const dialogBox = document.getElementsByClassName('dialog')[0];
 const addPropertyForm = document.getElementById('add-property-form');
 const saveToLocalStorageBtnContainer = document.getElementsByClassName('save-to-local-storage-btn-container')[0];
 const saveToLocalStorageButton = document.getElementById('save-to-local-storage');
+const modalBg = document.getElementsByClassName('modal-background')[0];
 const errorModal = document.getElementsByClassName('error-modal modal')[0];
 const errorModalCloseButton = errorModal.querySelector('.close-modal');
 const errorDetailContainer = errorModal.querySelector('.error-detail-container');

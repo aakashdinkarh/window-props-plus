@@ -29,6 +29,7 @@ function isEditorFieldsValid() {
 
 function onErrorModalClose() {
 	errorModal.classList.add('closed');
+	modalBg.classList.add('closed');
 
 	errorDetailContainer.replaceChildren(...[]);
 }
@@ -58,4 +59,5 @@ function showErrorModal(errors = {}) {
 
 	errorDetailContainer.replaceChildren(...errorChildren);
 	errorModal.classList.remove('closed');
+	modalBg.classList.remove('closed');
 }
