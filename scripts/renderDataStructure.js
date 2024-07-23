@@ -28,7 +28,9 @@ return a + b;`,
 	string: 'This is sample string',
 	number: '24',
 	boolean: 'true',
-}
+};
+
+const propertyPathSeparator = ' > ';
 
 function getBoolOption(val, data) {
 	const boolOption = document.createElement('button');
@@ -101,7 +103,8 @@ function getActionContainer(data, parentData = null, index = null) {
 					const propertyName = formData.get('property-name');
 					const propertyType = formData.get('property-type');
 
-					const defaultValue = propertyType in defaultValuesMapping ? [defaultValuesMapping[propertyType]] : [];
+					const defaultValue =
+						propertyType in defaultValuesMapping ? [defaultValuesMapping[propertyType]] : [];
 
 					data.value.push({
 						type: propertyType,
@@ -131,16 +134,7 @@ function getActionContainer(data, parentData = null, index = null) {
 	return actionContainer;
 }
 
-function renderArrayDataType(data) {
-	const aceEditor = document.createElement('div');
-	aceEditor.className = `ace-editor ace_${data.type}-mode`;
-	aceEditor.textContent = data.value[0];
-	
-	embedAceEditor(aceEditor, data);
-	return aceEditor;
-}
-
-function renderStringDataType(data) {
+function renderArrayDataType({ data, propertyPath }) {
 	const aceEditor = document.createElement('div');
 	aceEditor.className = `ace-editor ace_${data.type}-mode`;
 	aceEditor.textContent = data.value[0];
@@ -149,7 +143,16 @@ function renderStringDataType(data) {
 	return aceEditor;
 }
 
-function renderNumberDataType(data) {
+function renderStringDataType({ data }) {
+	const aceEditor = document.createElement('div');
+	aceEditor.className = `ace-editor ace_${data.type}-mode`;
+	aceEditor.textContent = data.value[0];
+
+	embedAceEditor(aceEditor, data);
+	return aceEditor;
+}
+
+function renderNumberDataType({ data }) {
 	const inputElement = document.createElement('input');
 
 	inputElement.type = 'number';
@@ -162,14 +165,14 @@ function renderNumberDataType(data) {
 	return inputElement;
 }
 
-function renderBooleanDataType(data) {
+function renderBooleanDataType({ data }) {
 	const boolOptionTrue = getBoolOption('true', data);
 	const boolOptionFalse = getBoolOption('false', data);
 
 	return [boolOptionTrue, boolOptionFalse];
 }
 
-function renderFunctionData(data) {
+function renderFunctionDataType({ data, propertyPath }) {
 	// make a separate function to render function and its arguments and body
 	const functionBody = data.value.at(-1);
 
@@ -208,8 +211,9 @@ function renderFunctionData(data) {
 	return [...argumentElements, aceEditor];
 }
 
-function renderObjectData(data, parentData = null, index = null) {
+function renderObjectData({ data, parentData = null, index = null, parentPath = '' }) {
 	const sectionElement = document.createElement('section');
+	const propertyPath = parentPath ? parentPath + propertyPathSeparator + data.key : data.key;
 
 	const containerDiv = document.createElement('div');
 	containerDiv.className = 'container';
@@ -242,23 +246,28 @@ function renderObjectData(data, parentData = null, index = null) {
 
 	if (data.type === 'object' && data.value && Array.isArray(data.value)) {
 		data.value.forEach((childData, index) => {
-			const childContent = renderObjectData(childData, data, index);
+			const childContent = renderObjectData({
+				data: childData,
+				parentData: data,
+				index,
+				parentPath: propertyPath,
+			});
 			sectionElement.append(childContent);
 		});
 	} else if (data.type === 'function') {
-		const childContent = renderFunctionData(data);
+		const childContent = renderFunctionDataType({ data, propertyPath });
 		sectionElement.append(...childContent);
 	} else if ('array' === data.type) {
-		const childContent = renderArrayDataType(data);
+		const childContent = renderArrayDataType({ data, propertyPath });
 		sectionElement.append(childContent);
 	} else if ('string' === data.type) {
-		const childContent = renderStringDataType(data);
+		const childContent = renderStringDataType({ data, propertyPath });
 		sectionElement.append(childContent);
 	} else if ('number' === data.type) {
-		const childContent = renderNumberDataType(data);
+		const childContent = renderNumberDataType({ data, propertyPath });
 		sectionElement.append(childContent);
 	} else if ('boolean' === data.type) {
-		const childContent = renderBooleanDataType(data);
+		const childContent = renderBooleanDataType({ data, propertyPath });
 		sectionElement.append(...childContent);
 	}
 
@@ -266,7 +275,7 @@ function renderObjectData(data, parentData = null, index = null) {
 }
 
 function renderDataStructure(data = INITIAL_DATA) {
-	const dataStructure = renderObjectData(data);
+	const dataStructure = renderObjectData({ data });
 
 	mainElement.replaceChildren(dataStructure);
 }
