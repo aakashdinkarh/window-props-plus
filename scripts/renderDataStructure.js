@@ -139,7 +139,7 @@ function renderArrayDataType({ data, propertyPath }) {
 	aceEditor.className = `ace-editor ace_${data.type}-mode`;
 	aceEditor.textContent = data.value[0];
 
-	embedAceEditor(aceEditor, data);
+	embedAceEditor({ element: aceEditor, data, propertyPath });
 	return aceEditor;
 }
 
@@ -148,7 +148,7 @@ function renderStringDataType({ data }) {
 	aceEditor.className = `ace-editor ace_${data.type}-mode`;
 	aceEditor.textContent = data.value[0];
 
-	embedAceEditor(aceEditor, data);
+	embedAceEditor({ element: aceEditor, data });
 	return aceEditor;
 }
 
@@ -206,7 +206,7 @@ function renderFunctionDataType({ data, propertyPath }) {
 	aceEditor.className = 'ace-editor';
 	aceEditor.textContent = functionBody;
 
-	embedAceEditor(aceEditor, data);
+	embedAceEditor({ element: aceEditor, data, propertyPath });
 
 	return [...argumentElements, aceEditor];
 }
