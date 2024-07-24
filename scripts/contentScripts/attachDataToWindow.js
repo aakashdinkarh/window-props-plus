@@ -7,17 +7,18 @@
 		value: [],
 	};
 
+	function handleException(type, propertyPath, fn) {
+		try {
+			return fn();
+		} catch (err) {
+			console.error(`Error parsing ${type} at ${propertyPath}: ${err.message}`);
+			return undefined;
+		}
+	}
+
 	function evaluateData(data, parentPath = '') {
 		const propertyPath = parentPath ? `${parentPath}${PROPERTY_PATH_SEPARATOR}${data.key}` : data.key;
 
-		function handleException(type, fn) {
-			try {
-				return fn();
-			} catch (err) {
-				console.error(`Error parsing ${type} at ${propertyPath}: ${err.message}`);
-				return undefined;
-			}
-		}
 
 		const evaluators = {
 			object: () =>
@@ -25,11 +26,11 @@
 					obj[childData.key] = evaluateData(childData, propertyPath);
 					return obj;
 				}, {}),
-			function: () => handleException(data.type, () => new Function(...data.value)),
-			string: () => handleException(data.type, () => String(data.value[0])),
-			number: () => handleException(data.type, () => Number(data.value[0])),
-			boolean: () => handleException(data.type, () => Boolean(data.value[0])),
-			array: () => handleException(data.type, () => Array(data.value[0])),
+			function: () => handleException(data.type, propertyPath, () => new Function(...data.value)),
+			string: () => handleException(data.type, propertyPath, () => String(data.value[0])),
+			number: () => handleException(data.type, propertyPath, () => Number(data.value[0])),
+			boolean: () => handleException(data.type, propertyPath, () => Boolean(data.value[0])),
+			array: () => handleException(data.type, propertyPath, () => Array(data.value[0])),
 		};
 
 		return evaluators[data.type] ? evaluators[data.type]() : undefined;
