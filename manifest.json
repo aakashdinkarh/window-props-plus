@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Update Local Storage",
 	"version": "1.0",
-	"description": "This extension can add custom properties to global window object. Please save after adding the properties through popup and refresh page to let the properties added.",
+	"description": "Add custom properties to the global window object with an intuitive UI. Save changes and refresh the page to apply the new properties.",
 	"permissions": ["scripting"],
 	"action": {
 		"default_popup": "index.html",
