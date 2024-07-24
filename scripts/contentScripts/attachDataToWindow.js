@@ -20,15 +20,16 @@
 		}
 
 		const evaluators = {
-			object: () => data.value.reduce((obj, childData) => {
-				obj[childData.key] = evaluateData(childData, propertyPath);
-				return obj;
-			}, {}),
+			object: () =>
+				data.value.reduce((obj, childData) => {
+					obj[childData.key] = evaluateData(childData, propertyPath);
+					return obj;
+				}, {}),
 			function: () => handleException(data.type, () => new Function(...data.value)),
 			string: () => handleException(data.type, () => String(data.value[0])),
 			number: () => handleException(data.type, () => Number(data.value[0])),
-			boolean: () => handleException(data.type, () => JSON.parse(data.value[0])),
-			array: () => handleException(data.type, () => JSON.parse(data.value[0])),
+			boolean: () => handleException(data.type, () => Boolean(data.value[0])),
+			array: () => handleException(data.type, () => Array(data.value[0])),
 		};
 
 		return evaluators[data.type] ? evaluators[data.type]() : undefined;
