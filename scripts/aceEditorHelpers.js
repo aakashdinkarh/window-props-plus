@@ -1,8 +1,8 @@
 let isAceEditorAdded = false;
 
 // cdnPrefix = https://cdnjs.cloudflare.com/ajax/libs/ace/1.35.3/
-const aceEditorScripts = ['scripts/aceEditor/ace.js', 'scripts/aceEditor/ext-language_tools.js'];
-const aceEditorScriptsLoadedStatus = [false, false];
+const aceEditorScripts = ['scripts/aceEditor/ace.js'];
+const aceEditorScriptsLoadedStatus = [false];
 
 async function loadScript(src, index) {
 	return new Promise((resolve, reject) => {
@@ -64,23 +64,27 @@ function editorCommonOptions(element) {
 	return editor;
 }
 
-async function embedAceEditor(element, dataObject) {
+async function embedAceEditor({ element, data, propertyPath = '' }) {
 	// Initialize Ace Editor
 	const isAceEditorAdded = await loadAceEditor();
 
 	if (!isAceEditorAdded) return;
-	
+
 	// avoiding CSP of loading worker via blob
 	ace.config.set('loadWorkerFromBlob', false);
 	const editor = editorCommonOptions(element);
 
 	editor.session.on('change', function () {
 		const content = editor.getValue();
-		dataObject.value = [content];
+		data.value = [content];
 	});
 
-	switch (dataObject.type) {
-		case 'string': 
+	if (propertyPath) {
+		ACE_EDITORS_MAPPING[propertyPath] = editor;
+	}
+
+	switch (data.type) {
+		case 'string':
 			editor.session.setMode('ace/mode/text');
 			break;
 		case 'array':
@@ -89,7 +93,7 @@ async function embedAceEditor(element, dataObject) {
 		case 'function':
 			editor.session.setMode('ace/mode/javascript');
 			break;
-		default :
+		default:
 			break;
 	}
 }

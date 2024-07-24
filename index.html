@@ -7,45 +7,57 @@
 		<link href="styles/addPropertyForm.css" rel="stylesheet" />
 		<link href="styles/aceEditor.css" rel="stylesheet" />
 		<link href="styles/saveToLocalStorage.css" rel="stylesheet" />
+		<link href="styles/modal.css" rel="stylesheet" />
 		<!-- <link href="styles/iconStyle.css" rel="stylesheet" /> -->
 		<script src="scripts/aceEditorHelpers.js"></script>
 		<script src="scripts/evaluateLocalStorage.js"></script>
 		<script src="scripts/renderDataStructure.js"></script>
 		<script src="scripts/showErrorState.js"></script>
 		<script src="scripts/updateLocalStorage.js"></script>
+		<script src="scripts/errorModal.js"></script>
 	</head>
 	<body>
 		<main></main>
 		<dialog open class="dialog">
-            <form id="add-property-form">
-                <input name="property-name" placeholder="Property name" type="text" required />
-                <div class="property-type-container">
-                    Property Type:
-                    <select name="property-type">
-                        <option value="object">Object</option>
-                        <option value="function">Function</option>
-                        <option value="array">Array</option>
-                        <option value="string">String</option>
-                        <option value="number">Number</option>
-                        <option value="boolean">Boolean</option>
-                    </select>
-                </div>
-                <div class="form-action-container">
-                    <button type="reset">Cancel</button>
-                    <button type="submit">Save</button>
-                </div>
-            </form>
-        </dialog>
+			<form id="add-property-form">
+				<input name="property-name" placeholder="Property name" type="text" required />
+				<div class="property-type-container">
+					Property Type:
+					<select name="property-type">
+						<option value="object">Object</option>
+						<option value="function">Function</option>
+						<option value="array">Array</option>
+						<option value="string">String</option>
+						<option value="number">Number</option>
+						<option value="boolean">Boolean</option>
+					</select>
+				</div>
+				<div class="form-action-container">
+					<button type="reset">Cancel</button>
+					<button type="submit">Save</button>
+				</div>
+			</form>
+		</dialog>
 
-        <div class="save-to-local-storage-btn-container" >
-            <button id="save-to-local-storage">
-                Save
-            </button>
-            <div class="save-status save-success"></div>
-            <div class="save-status save-fail">!</div>
-        </div>
+		<div class="save-to-local-storage-btn-container">
+			<button id="save-to-local-storage">Save</button>
+			<div class="save-status save-success"></div>
+			<div class="save-status save-fail">!</div>
+		</div>
 
-        <!-- <div class="icon" >
+		<div class="modal-background closed"></div>
+		<dialog open class="error-modal modal closed">
+			<button class="close-modal">X</button>
+			<section class="icon-placeholder">
+				<span class="error">!</span>
+			</section>
+			<section class="error-content">
+				<h2 class="heading">Error</h2>
+				<div class="error-detail-container"></div>
+			</section>
+		</dialog>
+
+		<!-- <div class="icon" >
             <div class="circle">
                 <div class="chip">
                     <div class="small-gap"></div>
@@ -57,6 +69,6 @@
             </div>
         </div> -->
 
-        <script src="scripts/onPageLoad.js"></script>
+		<script src="scripts/onPageLoad.js"></script>
 	</body>
 </html>

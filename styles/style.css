@@ -28,7 +28,7 @@ button {
 	cursor: pointer;
 }
 
-section {
+main section {
 	background-color: var(--color-blue-bg);
 	border: 2px solid var(--color-blue1);
 	border-radius: 8px;
@@ -122,9 +122,9 @@ dialog.open {
 	border-radius: 4px;
 }
 
-.error-heading {
+.main-error-heading {
 	color: var(--color-error);
 }
-.error-message {
+.main-error-message {
 	color: var(--color-error);
 }
