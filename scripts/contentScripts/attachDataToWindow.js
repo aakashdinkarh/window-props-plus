@@ -1,56 +1,58 @@
 (function () {
+	const PROPERTY_PATH_SEPARATOR = ' > ';
 	const LOCAL_STORAGE_DATA_KEY = 'local_data_state';
-	const defaultData = {
+	const DEFAULT_DATA = {
 		type: 'object',
 		key: 'window',
 		value: [],
 	};
 
-	function evaluateData(data) {
-		if (data.type === 'function') {
-			const func = new Function(...data.value);
-			return func;
+	function evaluateData(data, parentPath = '') {
+		const propertyPath = parentPath ? `${parentPath}${PROPERTY_PATH_SEPARATOR}${data.key}` : data.key;
+
+		function handleException(type, fn) {
+			try {
+				return fn();
+			} catch (err) {
+				console.error(`Error parsing ${type} at ${propertyPath}: ${err.message}`);
+				return undefined;
+			}
 		}
-		if (data.type === 'object') {
-			const dataToAdd = data.value.reduce((obj, childData) => {
-				obj[childData.key] = evaluateData(childData);
+
+		const evaluators = {
+			object: () => data.value.reduce((obj, childData) => {
+				obj[childData.key] = evaluateData(childData, propertyPath);
 				return obj;
-			}, {});
-			return dataToAdd;
-		}
-		if (data.type === 'string') {
-			return String(data.value[0]);
-		}
-		if (data.type === 'number') {
-			return Number(data.value[0]);
-		}
-		if (data.type === 'boolean' || data.type === 'array') {
-			return JSON.parse(data.value[0]);
-		}
-		return undefined;
+			}, {}),
+			function: () => handleException(data.type, () => new Function(...data.value)),
+			string: () => handleException(data.type, () => String(data.value[0])),
+			number: () => handleException(data.type, () => Number(data.value[0])),
+			boolean: () => handleException(data.type, () => JSON.parse(data.value[0])),
+			array: () => handleException(data.type, () => JSON.parse(data.value[0])),
+		};
+
+		return evaluators[data.type] ? evaluators[data.type]() : undefined;
 	}
 
-	function evalIsDataValid(data) {
-		const isDataValid = data && typeof data === 'object' && Object.keys(data).length !== 0;
-
-		const isRootKeyWindow = isDataValid && data.key === 'window' && data.type === 'object';
-
-		return isDataValid && isRootKeyWindow;
+	function isRootWindowObjectValid(data) {
+		return (
+			data &&
+			typeof data === 'object' &&
+			Object.keys(data).length !== 0 &&
+			data.key === 'window' &&
+			data.type === 'object'
+		);
 	}
 
 	function getLocalStorageData() {
 		try {
 			const stringifiedData = window.localStorage.getItem(LOCAL_STORAGE_DATA_KEY);
-			if (!stringifiedData) return defaultData;
+			if (!stringifiedData) return DEFAULT_DATA;
 
 			const parsedData = JSON.parse(stringifiedData);
-			const isDataValid = evalIsDataValid(parsedData);
-
-			if (isDataValid) return parsedData;
-
-			return null;
+			return isRootWindowObjectValid(parsedData) ? parsedData : null;
 		} catch (e) {
-			console.log('Error getting data from localStorage', e);
+			console.error('Error getting data from localStorage', e);
 			return null;
 		}
 	}
@@ -58,8 +60,6 @@
 	const windowExtensions = evaluateData(getLocalStorageData());
 
 	if (windowExtensions && typeof windowExtensions === 'object') {
-		for (const key in windowExtensions) {
-			window[key] = windowExtensions[key];
-		}
+		Object.assign(window, windowExtensions);
 	}
 })();
