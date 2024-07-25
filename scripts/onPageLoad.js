@@ -8,7 +8,7 @@ const errorModal = document.getElementsByClassName('error-modal modal')[0];
 const errorModalCloseButton = errorModal.querySelector('.close-modal');
 const errorDetailContainer = errorModal.querySelector('.error-detail-container');
 
-const ACE_EDITORS_MAPPING = {};
+const ACE_EDITORS_MAPPING = new Map();
 const LOCAL_STORAGE_DATA_KEY = 'local_data_state';
 let INITIAL_DATA = {};
 

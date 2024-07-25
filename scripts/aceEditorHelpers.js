@@ -86,6 +86,10 @@ async function embedAceEditor({ element, data, propertyPath = '' }) {
 
 	const editor = memoizedEditorOptions(element);
 
+	if (propertyPath) {
+		ACE_EDITORS_MAPPING.set(propertyPath, editor);
+	}
+
 	editor.session.on('change', () => {
 		data.value = [editor.getValue()];
 	});

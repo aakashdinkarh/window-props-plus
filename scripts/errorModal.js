@@ -1,5 +1,3 @@
-const ACE_EDITORS_MAPPING = new WeakMap();
-
 function isKeyInObject(key, object, type) {
 	const isKeyPresent = object && typeof object === 'object' && key in object;
 	const isTypeMatch = type ? isKeyPresent && typeof object[key] === type : true;
@@ -10,10 +8,8 @@ function isEditorFieldsValid() {
 	const errors = {};
 	let isValid = true;
 
-	for (const editorKey in ACE_EDITORS_MAPPING) {
-		const session =
-			isKeyInObject('getSession', ACE_EDITORS_MAPPING[editorKey], 'function') &&
-			ACE_EDITORS_MAPPING[editorKey].getSession();
+	for (const [editorKey, editor] in ACE_EDITORS_MAPPING) {
+		const session = isKeyInObject('getSession', editor, 'function') && editor.getSession();
 
 		const errs =
 			session &&
