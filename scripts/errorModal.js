@@ -1,3 +1,5 @@
+const ACE_EDITORS_MAPPING = new WeakMap();
+
 function isKeyInObject(key, object, type) {
 	const isKeyPresent = object && typeof object === 'object' && key in object;
 	const isTypeMatch = type ? isKeyPresent && typeof object[key] === type : true;
@@ -30,12 +32,18 @@ function isEditorFieldsValid() {
 function onErrorModalClose() {
 	errorModal.classList.add('closed');
 	modalBg.classList.add('closed');
+	errorDetailContainer.innerHTML = '';
+}
 
-	errorDetailContainer.replaceChildren(...[]);
+function createErrorMessage(text) {
+	const errorText = document.createElement('p');
+	errorText.className = 'error-message';
+	errorText.textContent = text;
+	return errorText;
 }
 
 function showErrorModal(errors = {}) {
-	const errorChildren = [];
+	const fragment = document.createDocumentFragment();
 
 	for (const editorKey in errors) {
 		const errs = errors[editorKey];
@@ -44,20 +52,17 @@ function showErrorModal(errors = {}) {
 		errorDetail.className = 'error-detail';
 
 		const editorKeyText = document.createElement('b');
-		editorKeyText.innerText = `${editorKey} :`;
+		editorKeyText.textContent = `${editorKey} :`;
 
-		const errMessages = errs.map((err) => {
-			const errorText = document.createElement('p');
-			errorText.className = 'error-message';
-			errorText.innerText = err.text;
-			return errorText;
+		errorDetail.appendChild(editorKeyText);
+		errs.forEach((err) => {
+			errorDetail.appendChild(createErrorMessage(err.text));
 		});
 
-		errorDetail.append(editorKeyText, ...errMessages);
-		errorChildren.push(errorDetail);
+		fragment.appendChild(errorDetail);
 	}
 
-	errorDetailContainer.replaceChildren(...errorChildren);
+	errorDetailContainer.appendChild(fragment);
 	errorModal.classList.remove('closed');
 	modalBg.classList.remove('closed');
 }
