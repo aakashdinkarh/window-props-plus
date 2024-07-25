@@ -1,3 +1,16 @@
+const propertyPathSeparator = ' > ';
+
+const defaultValuesMapping = {
+	function: `// this is a sample function
+const a = 5;
+const b = 6;
+return a + b;`,
+	array: JSON.stringify(['Dinkar', 24, true, { role: 'Frontend Engineer' }]),
+	string: 'This is sample string',
+	number: '24',
+	boolean: 'true',
+};
+
 function showDialog(addActionButton) {
 	closeDialogBox();
 
@@ -18,19 +31,6 @@ function showDialog(addActionButton) {
 	dialogBox.style.left = `${right}px`;
 	dialogBox.classList.add('open');
 }
-
-const defaultValuesMapping = {
-	function: `// this is a sample function
-const a = 5;
-const b = 6;
-return a + b;`,
-	array: JSON.stringify(['Dinkar', 24, true, { role: 'Frontend Engineer' }]),
-	string: 'This is sample string',
-	number: '24',
-	boolean: 'true',
-};
-
-const propertyPathSeparator = ' > ';
 
 function getBoolOption(val, data) {
 	const boolOption = document.createElement('button');
@@ -84,7 +84,7 @@ function getActionContainer(data, parentData = null, index = null) {
 		addActionButton.title = isFunctionDataType ? 'Add new argument' : 'Add object property';
 
 		addActionButton.onclick = () => {
-			if (!data || !data.value || !Array.isArray(data.value)) {
+			if (!Array.isArray(data.value)) {
 				return;
 			}
 
@@ -134,86 +134,75 @@ function getActionContainer(data, parentData = null, index = null) {
 	return actionContainer;
 }
 
-function renderArrayDataType({ data, propertyPath }) {
-	const aceEditor = document.createElement('div');
-	aceEditor.className = `ace-editor ace_${data.type}-mode`;
-	aceEditor.textContent = data.value[0];
-
-	embedAceEditor({ element: aceEditor, data, propertyPath });
-	return aceEditor;
-}
-
-function renderStringDataType({ data }) {
-	const aceEditor = document.createElement('div');
-	aceEditor.className = `ace-editor ace_${data.type}-mode`;
-	aceEditor.textContent = data.value[0];
-
-	embedAceEditor({ element: aceEditor, data });
-	return aceEditor;
-}
-
-function renderNumberDataType({ data }) {
-	const inputElement = document.createElement('input');
-
-	inputElement.type = 'number';
-	inputElement.value = data.value[0];
-	inputElement.className = `custom_ace-editor ace_${data.type}-mode`;
-	inputElement.onchange = (e) => {
-		data.value = [e.target.value];
-	};
-
-	return inputElement;
-}
-
-function renderBooleanDataType({ data }) {
-	const boolOptionTrue = getBoolOption('true', data);
-	const boolOptionFalse = getBoolOption('false', data);
-
-	return [boolOptionTrue, boolOptionFalse];
-}
-
-function renderFunctionDataType({ data, propertyPath }) {
-	// make a separate function to render function and its arguments and body
-	const functionBody = data.value.at(-1);
-
-	const argumentElements = data.value.slice(0, -1).map((arg, index, arr) => {
-		const containerDiv = document.createElement('div');
-		containerDiv.className = 'container';
-
-		const contentElement = document.createElement('div');
-		contentElement.className = 'content';
-
-		const typeText = document.createElement('span');
-		typeText.className = 'type';
-		typeText.textContent = 'argument';
-		contentElement.appendChild(typeText);
-
-		const typeTextInput = document.createElement('input');
-		typeTextInput.value = arg || '';
-		typeTextInput.placeholder = 'arg';
-		typeTextInput.onchange = (e) => {
-			data.value[index] = e.target.value;
+const renderDataTypeFunctions = {
+	array: ({ data, propertyPath }) => {
+		const aceEditor = document.createElement('div');
+		aceEditor.className = `ace-editor ace_${data.type}-mode`;
+		aceEditor.textContent = data.value[0];
+		embedAceEditor({ element: aceEditor, data, propertyPath });
+		return aceEditor;
+	},
+	string: ({ data }) => {
+		const aceEditor = document.createElement('div');
+		aceEditor.className = `ace-editor ace_${data.type}-mode`;
+		aceEditor.textContent = data.value[0];
+		embedAceEditor({ element: aceEditor, data });
+		return aceEditor;
+	},
+	number: ({ data }) => {
+		const inputElement = document.createElement('input');
+		inputElement.type = 'number';
+		inputElement.value = data.value[0];
+		inputElement.className = `custom_ace-editor ace_${data.type}-mode`;
+		inputElement.onchange = (e) => {
+			data.value = [e.target.value];
 		};
-		contentElement.appendChild(typeTextInput);
+		return inputElement;
+	},
+	boolean: ({ data }) => {
+		return [getBoolOption('true', data), getBoolOption('false', data)];
+	},
+	function: ({ data, propertyPath }) => {
+		const functionBody = data.value.at(-1);
+		const argumentElements = data.value.slice(0, -1).map((arg, index) => {
+			const containerDiv = document.createElement('div');
+			containerDiv.className = 'container';
 
-		const actionContainer = getFuncArgumentActionContainer(data, index);
+			const contentElement = document.createElement('div');
+			contentElement.className = 'content';
 
-		containerDiv.append(contentElement, actionContainer);
-		return containerDiv;
-	});
+			const typeText = document.createElement('span');
+			typeText.className = 'type';
+			typeText.textContent = 'argument';
+			contentElement.appendChild(typeText);
 
-	const aceEditor = document.createElement('div');
-	aceEditor.className = 'ace-editor';
-	aceEditor.textContent = functionBody;
+			const typeTextInput = document.createElement('input');
+			typeTextInput.value = arg || '';
+			typeTextInput.placeholder = 'arg';
+			typeTextInput.onchange = (e) => {
+				data.value[index] = e.target.value;
+			};
+			contentElement.appendChild(typeTextInput);
 
-	embedAceEditor({ element: aceEditor, data, propertyPath });
+			const actionContainer = getFuncArgumentActionContainer(data, index);
 
-	return [...argumentElements, aceEditor];
-}
+			containerDiv.append(contentElement, actionContainer);
+			return containerDiv;
+		});
+
+		const aceEditor = document.createElement('div');
+		aceEditor.className = 'ace-editor';
+		aceEditor.textContent = functionBody;
+
+		embedAceEditor({ element: aceEditor, data, propertyPath });
+
+		return [...argumentElements, aceEditor];
+	},
+};
 
 function renderObjectData({ data, parentData = null, index = null, parentPath = '' }) {
 	const sectionElement = document.createElement('section');
-	const propertyPath = parentPath ? parentPath + propertyPathSeparator + data.key : data.key;
+	const propertyPath = parentPath ? `${parentPath}${propertyPathSeparator}${data.key}` : data.key;
 
 	const containerDiv = document.createElement('div');
 	containerDiv.className = 'container';
@@ -244,7 +233,7 @@ function renderObjectData({ data, parentData = null, index = null, parentPath = 
 
 	sectionElement.append(containerDiv);
 
-	if (data.type === 'object' && data.value && Array.isArray(data.value)) {
+	if (data.type === 'object' && Array.isArray(data.value)) {
 		data.value.forEach((childData, index) => {
 			const childContent = renderObjectData({
 				data: childData,
@@ -254,21 +243,9 @@ function renderObjectData({ data, parentData = null, index = null, parentPath = 
 			});
 			sectionElement.append(childContent);
 		});
-	} else if (data.type === 'function') {
-		const childContent = renderFunctionDataType({ data, propertyPath });
-		sectionElement.append(...childContent);
-	} else if ('array' === data.type) {
-		const childContent = renderArrayDataType({ data, propertyPath });
-		sectionElement.append(childContent);
-	} else if ('string' === data.type) {
-		const childContent = renderStringDataType({ data, propertyPath });
-		sectionElement.append(childContent);
-	} else if ('number' === data.type) {
-		const childContent = renderNumberDataType({ data, propertyPath });
-		sectionElement.append(childContent);
-	} else if ('boolean' === data.type) {
-		const childContent = renderBooleanDataType({ data, propertyPath });
-		sectionElement.append(...childContent);
+	} else {
+		const childContent = renderDataTypeFunctions[type] ? renderDataTypeFunctions[type]({ data, propertyPath }) : [];
+		sectionElement.append(...(Array.isArray(childContent) ? childContent : [childContent]));
 	}
 
 	return sectionElement;
@@ -276,6 +253,5 @@ function renderObjectData({ data, parentData = null, index = null, parentPath = 
 
 function renderDataStructure(data = INITIAL_DATA) {
 	const dataStructure = renderObjectData({ data });
-
 	mainElement.replaceChildren(dataStructure);
 }
