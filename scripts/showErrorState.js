@@ -1,5 +1,5 @@
-let errorMessage = 'Seems like there is something wrong with your data saved for last time.';
-errorMessage += '\n Please refresh and accept the default data from prompt to continue.';
+const errorMessage = `Seems like there is something wrong with your data saved for last time.
+Please refresh and accept the default data from prompt to continue.`;
 
 function showErrorState() {
 	const errorHeadingElement = document.createElement('h2');
