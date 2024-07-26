@@ -1,4 +1,3 @@
-// Cache DOM elements and frequently used values
 // cdnPrefix = https://cdnjs.cloudflare.com/ajax/libs/ace/1.35.3/
 const ACE_EDITOR_SCRIPTS = ['scripts/aceEditor/ace.js'];
 const ACE_EDITOR_SCRIPTS_LOADED_STATUS = new Array(ACE_EDITOR_SCRIPTS.length).fill(false);
