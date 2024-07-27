@@ -148,7 +148,7 @@ const renderDataTypeFunctions = {
 		return aceEditor;
 	},
 	number: ({ data }) => {
-		const inputElement = createElement('input', `custom_ace-editor ace_${data.type}-mode`, {
+		const inputElement = createElement('input', `custom_ace-editor ace_${data.type}-mode`, null, {
 			type: 'number',
 			value: data.value[0],
 		});
