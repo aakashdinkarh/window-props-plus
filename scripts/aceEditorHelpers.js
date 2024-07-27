@@ -12,20 +12,18 @@ function loadScript(src, index) {
 			return;
 		}
 
-		const script = document.createElement('script');
-		script.src = src;
-		script.async = true;
-
-		script.onload = () => {
-			ACE_EDITOR_SCRIPTS_LOADED_STATUS[index] = true;
-			resolve(true);
-		};
-
-		script.onerror = () => {
-			ACE_EDITOR_SCRIPTS_LOADED_STATUS[index] = false;
-			reject(new Error(`Failed to load script: ${src}`));
-		};
-
+		const script = createElement('script', null, null, {
+			src,
+			async: true,
+			onload: () => {
+				ACE_EDITOR_SCRIPTS_LOADED_STATUS[index] = true;
+				resolve(true);
+			},
+			onerror: () => {
+				ACE_EDITOR_SCRIPTS_LOADED_STATUS[index] = false;
+				reject(new Error(`Failed to load script: ${src}`));
+			},
+		});
 		document.head.appendChild(script);
 	});
 }

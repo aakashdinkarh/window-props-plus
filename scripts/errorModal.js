@@ -31,28 +31,18 @@ function onErrorModalClose() {
 	errorDetailContainer.innerHTML = '';
 }
 
-function createErrorMessage(text) {
-	const errorText = document.createElement('p');
-	errorText.className = 'error-message';
-	errorText.textContent = text;
-	return errorText;
-}
-
 function showErrorModal(errors = {}) {
 	const fragment = document.createDocumentFragment();
 
 	for (const editorKey in errors) {
 		const errs = errors[editorKey];
 
-		const errorDetail = document.createElement('div');
-		errorDetail.className = 'error-detail';
-
-		const editorKeyText = document.createElement('b');
-		editorKeyText.textContent = `${editorKey} :`;
+		const errorDetail = createElement('div', 'error-detail');
+		const editorKeyText = createElement('b', null, `${editorKey} :`);
 
 		errorDetail.appendChild(editorKeyText);
 		errs.forEach((err) => {
-			errorDetail.appendChild(createErrorMessage(err.text));
+			errorDetail.appendChild(createElement('p', 'error-message', err.text));
 		});
 
 		fragment.appendChild(errorDetail);

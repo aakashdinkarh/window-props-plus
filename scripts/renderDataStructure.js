@@ -33,35 +33,36 @@ function showDialog(addActionButton) {
 }
 
 function getBoolOption(val, data) {
-	const boolOption = document.createElement('button');
-	boolOption.className = `custom_ace-editor bool_option ${data.value[0] === val ? 'selected' : ''}`;
-	boolOption.innerText = val.toUpperCase();
+	const boolOption = createElement(
+		'button',
+		`custom_ace-editor bool_option ${data.value[0] === val ? 'selected' : ''}`,
+		val.toUpperCase(),
+		{
+			onclick: () => {
+				const otherBoolOption = val === 'true' ? boolOption.nextSibling : boolOption.previousSibling;
+				boolOption.classList.add('selected');
+				otherBoolOption.classList.remove('selected');
+				data.value = [val];
+			}
+		}
+	);
 
 	if (val === 'true') boolOption.style.marginRight = '8px';
-
-	boolOption.onclick = () => {
-		const otherBoolOption = val === 'true' ? boolOption.nextSibling : boolOption.previousSibling;
-		boolOption.classList.add('selected');
-		otherBoolOption.classList.remove('selected');
-		data.value = [val];
-	};
 
 	return boolOption;
 }
 
 function getFuncArgumentActionContainer(data, index) {
 	// action buttons container
-	const actionContainer = document.createElement('div');
-	actionContainer.className = 'action-container';
+	const actionContainer = createElement('div', 'action-container');
 
 	// remove action button
-	const removeActionButton = document.createElement('button');
-	removeActionButton.className = 'action-button remove';
-	removeActionButton.textContent = '-';
-	removeActionButton.onclick = () => {
-		data.value = data.value.filter((_, i) => i !== index);
-		renderDataStructure();
-	};
+	const removeActionButton = createElement('button', 'action-button remove', '-', {
+		onclick: () => {
+			data.value = data.value.filter((_, i) => i !== index);
+			renderDataStructure();
+		}
+	});
 	actionContainer.appendChild(removeActionButton);
 
 	return actionContainer;
@@ -69,8 +70,7 @@ function getFuncArgumentActionContainer(data, index) {
 
 function getActionContainer(data, parentData = null, index = null) {
 	// action buttons container
-	const actionContainer = document.createElement('div');
-	actionContainer.className = 'action-container';
+	const actionContainer = createElement('div', 'action-container');
 
 	const showAddActionButton = !['string', 'number', 'boolean', 'array'].includes(data.type);
 	const showRemoveActionButton = parentData != null;
@@ -78,11 +78,14 @@ function getActionContainer(data, parentData = null, index = null) {
 
 	if (showAddActionButton) {
 		// add action button
-		const addActionButton = document.createElement('button');
-		addActionButton.className = `action-button add${isFunctionDataType ? ' function' : ''}`;
-		addActionButton.textContent = '+';
-		addActionButton.title = isFunctionDataType ? 'Add new argument' : 'Add object property';
-
+		const addActionButton = createElement(
+			'button',
+			`action-button add${isFunctionDataType ? ' function' : ''}`,
+			'+',
+			{
+				title: isFunctionDataType ? 'Add new argument' : 'Add object property',
+			}
+		);
 		addActionButton.onclick = () => {
 			if (!Array.isArray(data.value)) {
 				return;
@@ -121,13 +124,12 @@ function getActionContainer(data, parentData = null, index = null) {
 
 	if (showRemoveActionButton) {
 		// remove action button
-		const removeActionButton = document.createElement('button');
-		removeActionButton.className = 'action-button remove';
-		removeActionButton.textContent = '-';
-		removeActionButton.onclick = () => {
-			parentData.value = parentData.value.filter((_, i) => i !== index);
-			renderDataStructure();
-		};
+		const removeActionButton = createElement('button', 'action-button remove', '-', {
+			onclick: () => {
+				parentData.value = parentData.value.filter((_, i) => i !== index);
+				renderDataStructure();
+			}
+		});
 		actionContainer.appendChild(removeActionButton);
 	}
 
@@ -136,24 +138,20 @@ function getActionContainer(data, parentData = null, index = null) {
 
 const renderDataTypeFunctions = {
 	array: ({ data, propertyPath }) => {
-		const aceEditor = document.createElement('div');
-		aceEditor.className = `ace-editor ace_${data.type}-mode`;
-		aceEditor.textContent = data.value[0];
+		const aceEditor = createElement('div', `ace-editor ace_${data.type}-mode`, data.value[0]);
 		embedAceEditor({ element: aceEditor, data, propertyPath });
 		return aceEditor;
 	},
 	string: ({ data }) => {
-		const aceEditor = document.createElement('div');
-		aceEditor.className = `ace-editor ace_${data.type}-mode`;
-		aceEditor.textContent = data.value[0];
+		const aceEditor = createElement('div', `ace-editor ace_${data.type}-mode`, data.value[0]);
 		embedAceEditor({ element: aceEditor, data });
 		return aceEditor;
 	},
 	number: ({ data }) => {
-		const inputElement = document.createElement('input');
-		inputElement.type = 'number';
-		inputElement.value = data.value[0];
-		inputElement.className = `custom_ace-editor ace_${data.type}-mode`;
+		const inputElement = createElement('input', `custom_ace-editor ace_${data.type}-mode`, {
+			type: 'number',
+			value: data.value[0],
+		});
 		inputElement.onchange = (e) => {
 			data.value = [e.target.value];
 		};
@@ -165,20 +163,17 @@ const renderDataTypeFunctions = {
 	function: ({ data, propertyPath }) => {
 		const functionBody = data.value.at(-1);
 		const argumentElements = data.value.slice(0, -1).map((arg, index) => {
-			const containerDiv = document.createElement('div');
-			containerDiv.className = 'container';
+			const containerDiv = createElement('div', 'container');
 
-			const contentElement = document.createElement('div');
-			contentElement.className = 'content';
+			const contentElement = createElement('div', 'content');
 
-			const typeText = document.createElement('span');
-			typeText.className = 'type';
-			typeText.textContent = 'argument';
+			const typeText = createElement('span', 'type', 'argument');
 			contentElement.appendChild(typeText);
 
-			const typeTextInput = document.createElement('input');
-			typeTextInput.value = arg || '';
-			typeTextInput.placeholder = 'arg';
+			const typeTextInput = createElement('input', null, null, {
+				value: arg || '',
+				placeholder: 'arg',
+			});
 			typeTextInput.onchange = (e) => {
 				data.value[index] = e.target.value;
 			};
@@ -190,9 +185,7 @@ const renderDataTypeFunctions = {
 			return containerDiv;
 		});
 
-		const aceEditor = document.createElement('div');
-		aceEditor.className = 'ace-editor';
-		aceEditor.textContent = functionBody;
+		const aceEditor = createElement('div', 'ace-editor', functionBody);
 
 		embedAceEditor({ element: aceEditor, data, propertyPath });
 
@@ -201,30 +194,24 @@ const renderDataTypeFunctions = {
 };
 
 function renderObjectData({ data, parentData = null, index = null, parentPath = '' }) {
-	const sectionElement = document.createElement('section');
+	const sectionElement = createElement('section');
 	const propertyPath = parentPath ? `${parentPath}${propertyPathSeparator}${data.key}` : data.key;
 
-	const containerDiv = document.createElement('div');
-	containerDiv.className = 'container';
+	const containerDiv = createElement('div', 'container');
 
-	const contentElement = document.createElement('div');
-	contentElement.className = 'content';
+	const contentElement = createElement('div', 'content');
 
 	if (data.type) {
-		const typeText = document.createElement('span');
-		typeText.className = 'type';
-		typeText.textContent = data.type;
-		contentElement.appendChild(typeText);
+		contentElement.appendChild(createElement('span', 'type', data.type));
 	}
 	if (data.key) {
-		const typeTextInput = document.createElement('input');
-		typeTextInput.value = data.key;
+		const typeTextInput = createElement('input', null, null, {
+			value: data.key,
+			readonly: !parentData,
+		});
 		typeTextInput.onchange = (e) => {
 			data.key = e.target.value;
 		};
-		if (!parentData) {
-			typeTextInput.readOnly = true;
-		}
 		contentElement.appendChild(typeTextInput);
 	}
 
