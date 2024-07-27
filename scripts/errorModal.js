@@ -16,7 +16,7 @@ function isEditorFieldsValid() {
 			isKeyInObject('getAnnotations', session, 'function') &&
 			session.getAnnotations().filter((err) => err.type === 'error');
 
-		if (errs.length) {
+		if (errs && errs.length) {
 			isValid = false;
 			errors[editorKey] = errs;
 		}

@@ -244,7 +244,9 @@ function renderObjectData({ data, parentData = null, index = null, parentPath = 
 			sectionElement.append(childContent);
 		});
 	} else {
-		const childContent = renderDataTypeFunctions[type] ? renderDataTypeFunctions[type]({ data, propertyPath }) : [];
+		const childContent = renderDataTypeFunctions[data.type]
+			? renderDataTypeFunctions[data.type]({ data, propertyPath })
+			: [];
 		sectionElement.append(...(Array.isArray(childContent) ? childContent : [childContent]));
 	}
 

@@ -61,8 +61,9 @@ const evaluateLocalStorage = async () => {
 		console.error(e);
 
 		if (e.message?.includes('Cannot access')) {
-			errorMessage = 'Cannot access this website, NOT ALLOWED';
-			return null;
+			errorMessage = e.message;
+			subErrorMessage = 'Cannot access this website, NOT ALLOWED';
+			throw new Error(e.message);
 		}
 
 		if (e.message) alert(e.message);

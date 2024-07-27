@@ -51,10 +51,11 @@ document.addEventListener('click', handleClickOutside);
 
 			document.addEventListener('DOMContentLoaded', loadAceEditor);
 			return;
+		} else {
+			throw new Error('No data found in local storage');
 		}
-		saveToLocalStorageButton.style.display = 'none';
-		showErrorState();
 	} catch (error) {
+		saveToLocalStorageButton.style.display = 'none';
 		console.error('Initialization error:', error);
 		showErrorState();
 	}
