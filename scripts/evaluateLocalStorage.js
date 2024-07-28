@@ -1,10 +1,13 @@
+import { LOCAL_STORAGE_DATA_KEY } from "./onPageLoad.js";
+import { errorDetails } from "./showErrorState.js";
+
 const DEFAULT_DATA = {
 	type: 'object',
 	key: 'window',
 	value: [],
 };
 
-const executeScriptAsync = ({ tabId, func, args }) => {
+export const executeScriptAsync = ({ tabId, func, args }) => {
 	return new Promise((resolve, reject) => {
 		chrome.scripting.executeScript(
 			{
@@ -39,7 +42,7 @@ const handleConfirmation = () => {
 	return agree;
 };
 
-const evaluateLocalStorage = async () => {
+export const evaluateLocalStorage = async () => {
 	try {
 		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -61,8 +64,8 @@ const evaluateLocalStorage = async () => {
 		console.error(e);
 
 		if (e.message?.includes('Cannot access')) {
-			errorMessage = e.message;
-			subErrorMessage = 'Cannot access this website, NOT ALLOWED';
+			errorDetails.errorMessage = e.message;
+			errorDetails.subErrorMessage = 'Cannot access this website, NOT ALLOWED';
 			throw new Error(e.message);
 		}
 

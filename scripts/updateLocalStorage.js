@@ -1,3 +1,6 @@
+import { executeScriptAsync } from "./evaluateLocalStorage.js";
+import { saveToLocalStorageBtnContainer } from "./onPageLoad.js";
+
 const updateLocalStorageInTab = (dataKey, data) => {
 	try {
 		localStorage.setItem(dataKey, JSON.stringify(data));
@@ -16,7 +19,7 @@ const indicateUserAboutSaveStatus = (isSuccess) => {
 	}, 1000);
 };
 
-const updateLocalStorage = async (dataKey, data) => {
+export const updateLocalStorage = async (dataKey, data) => {
 	try {
 		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 		const results = await executeScriptAsync({
