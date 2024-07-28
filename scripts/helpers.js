@@ -2,7 +2,7 @@ const createElement = (tagName, className, textContent, options = {}) => {
 	const element = document.createElement(tagName);
 
 	if (className) {
-		element.class = className;
+		element.className = className;
 	}
 
 	if (textContent) {
