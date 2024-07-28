@@ -1,10 +1,13 @@
+import { createElement } from "./helpers.js";
+import { ACE_EDITORS_MAPPING, errorDetailContainer, errorModal, modalBg } from "./onPageLoad.js";
+
 function isKeyInObject(key, object, type) {
 	const isKeyPresent = object && typeof object === 'object' && key in object;
 	const isTypeMatch = type ? isKeyPresent && typeof object[key] === type : true;
 	return isKeyPresent && isTypeMatch;
 }
 
-function isEditorFieldsValid() {
+export function isEditorFieldsValid() {
 	const errors = {};
 	let isValid = true;
 
@@ -25,13 +28,13 @@ function isEditorFieldsValid() {
 	return { isValid, errors };
 }
 
-function onErrorModalClose() {
+export function onErrorModalClose() {
 	errorModal.classList.add('closed');
 	modalBg.classList.add('closed');
 	errorDetailContainer.innerHTML = '';
 }
 
-function showErrorModal(errors = {}) {
+export function showErrorModal(errors = {}) {
 	const fragment = document.createDocumentFragment();
 
 	for (const editorKey in errors) {

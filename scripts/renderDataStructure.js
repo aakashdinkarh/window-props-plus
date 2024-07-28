@@ -1,3 +1,7 @@
+import { embedAceEditor } from "./aceEditorHelpers.js";
+import { createElement } from "./helpers.js";
+import { addPropertyForm, closeDialogBox, dialogBox, INITIAL_DATA, mainElement } from "./onPageLoad.js";
+
 const propertyPathSeparator = ' > ';
 
 const defaultValuesMapping = {
@@ -241,7 +245,7 @@ function renderObjectData({ data, parentData = null, index = null, parentPath = 
 	return sectionElement;
 }
 
-function renderDataStructure(data = INITIAL_DATA) {
+export function renderDataStructure(data = INITIAL_DATA) {
 	const dataStructure = renderObjectData({ data });
 	mainElement.replaceChildren(dataStructure);
 }

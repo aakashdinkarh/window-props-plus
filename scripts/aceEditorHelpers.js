@@ -1,3 +1,6 @@
+import { createElement } from "./helpers.js";
+import { ACE_EDITORS_MAPPING } from "./onPageLoad.js";
+
 // cdnPrefix = https://cdnjs.cloudflare.com/ajax/libs/ace/1.35.3/
 const ACE_EDITOR_SCRIPTS = ['scripts/aceEditor/ace.js'];
 const ACE_EDITOR_SCRIPTS_LOADED_STATUS = new Array(ACE_EDITOR_SCRIPTS.length).fill(false);
@@ -78,7 +81,7 @@ const EDITOR_MODES = new Map([
 	['function', 'javascript'],
 ]);
 
-async function embedAceEditor({ element, data, propertyPath = '' }) {
+export async function embedAceEditor({ element, data, propertyPath = '' }) {
 	if (!(await loadAceEditor())) return;
 
 	const editor = memoizedEditorOptions(element);

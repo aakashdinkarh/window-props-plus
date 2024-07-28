@@ -1,4 +1,4 @@
-const createElement = (tagName, className, textContent, options = {}) => {
+export const createElement = (tagName, className, textContent, options = {}) => {
 	const element = document.createElement(tagName);
 
 	const { readOnly, ...restOptions } = options;
