@@ -1,51 +1,55 @@
+// cdnPrefix = https://cdnjs.cloudflare.com/ajax/libs/ace/1.35.3/
+const ACE_EDITOR_SCRIPTS = ['scripts/aceEditor/ace.js'];
+const ACE_EDITOR_SCRIPTS_LOADED_STATUS = new Array(ACE_EDITOR_SCRIPTS.length).fill(false);
+
 let isAceEditorAdded = false;
 
-// cdnPrefix = https://cdnjs.cloudflare.com/ajax/libs/ace/1.35.3/
-const aceEditorScripts = ['scripts/aceEditor/ace.js'];
-const aceEditorScriptsLoadedStatus = [false];
-
-async function loadScript(src, index) {
+// Use an efficient way to load scripts
+function loadScript(src, index) {
 	return new Promise((resolve, reject) => {
-		if (aceEditorScriptsLoadedStatus[index]) {
+		if (ACE_EDITOR_SCRIPTS_LOADED_STATUS[index]) {
 			resolve(true);
+			return;
 		}
-		const script = document.createElement('script');
-		script.src = src;
-		script.onload = () => {
-			aceEditorScriptsLoadedStatus[index] = true;
-			resolve(true);
-		};
-		script.onerror = () => {
-			aceEditorScriptsLoadedStatus[index] = false;
-			reject(false);
-		};
-		document.head.append(script);
+
+		const script = createElement('script', null, null, {
+			src,
+			async: true,
+			onload: () => {
+				ACE_EDITOR_SCRIPTS_LOADED_STATUS[index] = true;
+				resolve(true);
+			},
+			onerror: () => {
+				ACE_EDITOR_SCRIPTS_LOADED_STATUS[index] = false;
+				reject(new Error(`Failed to load script: ${src}`));
+			},
+		});
+		document.head.appendChild(script);
 	});
 }
 
+// Use Promise.all for parallel script loading
 async function loadAceEditor() {
-	// Ace Editor CDN
 	if (isAceEditorAdded) {
-		return Promise.resolve(true);
+		return true;
 	}
 
 	try {
-		const scriptLoadPromises = aceEditorScripts.map((script, index) => loadScript(script, index));
-		await Promise.allSettled(scriptLoadPromises);
+		await Promise.all(ACE_EDITOR_SCRIPTS.map((script, index) => loadScript(script, index)));
 		isAceEditorAdded = true;
-		return Promise.resolve(true);
-	} catch (e) {
-		return Promise.reject(false);
+		ace.config.set('loadWorkerFromBlob', false);
+		return true;
+	} catch (error) {
+		console.error('Failed to load Ace Editor:', error);
+		return false;
 	}
 }
 
-function editorCommonOptions(element) {
-	const editor = ace.edit(element);
-
-	editor.setTheme('ace/theme/dracula');
-	// Set the default tab size
-	editor.session.setTabSize(2);
-	editor.setOptions({
+// Memoize common editor options
+const memoizedEditorOptions = (() => {
+	const options = {
+		theme: 'ace/theme/dracula',
+		tabSize: 2,
 		enableBasicAutocompletion: true,
 		enableLiveAutocompletion: true,
 		enableSnippets: true,
@@ -59,41 +63,34 @@ function editorCommonOptions(element) {
 		readOnly: false,
 		fontSize: '12px',
 		wrap: false,
-	});
+	};
+	return (element) => {
+		const editor = ace.edit(element);
+		editor.setOptions(options);
+		return editor;
+	};
+})();
 
-	return editor;
-}
+// Use a map for editor modes
+const EDITOR_MODES = new Map([
+	['string', 'text'],
+	['array', 'json'],
+	['function', 'javascript'],
+]);
 
 async function embedAceEditor({ element, data, propertyPath = '' }) {
-	// Initialize Ace Editor
-	const isAceEditorAdded = await loadAceEditor();
+	if (!(await loadAceEditor())) return;
 
-	if (!isAceEditorAdded) return;
-
-	// avoiding CSP of loading worker via blob
-	ace.config.set('loadWorkerFromBlob', false);
-	const editor = editorCommonOptions(element);
-
-	editor.session.on('change', function () {
-		const content = editor.getValue();
-		data.value = [content];
-	});
+	const editor = memoizedEditorOptions(element);
 
 	if (propertyPath) {
-		ACE_EDITORS_MAPPING[propertyPath] = editor;
+		ACE_EDITORS_MAPPING.set(propertyPath, editor);
 	}
 
-	switch (data.type) {
-		case 'string':
-			editor.session.setMode('ace/mode/text');
-			break;
-		case 'array':
-			editor.session.setMode('ace/mode/json');
-			break;
-		case 'function':
-			editor.session.setMode('ace/mode/javascript');
-			break;
-		default:
-			break;
-	}
+	editor.session.on('change', () => {
+		data.value = [editor.getValue()];
+	});
+
+	const mode = EDITOR_MODES.get(data.type) || 'text';
+	editor.session.setMode(`ace/mode/${mode}`);
 }

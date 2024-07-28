@@ -8,17 +8,15 @@ function isEditorFieldsValid() {
 	const errors = {};
 	let isValid = true;
 
-	for (const editorKey in ACE_EDITORS_MAPPING) {
-		const session =
-			isKeyInObject('getSession', ACE_EDITORS_MAPPING[editorKey], 'function') &&
-			ACE_EDITORS_MAPPING[editorKey].getSession();
+	for (const [editorKey, editor] in ACE_EDITORS_MAPPING) {
+		const session = isKeyInObject('getSession', editor, 'function') && editor.getSession();
 
 		const errs =
 			session &&
 			isKeyInObject('getAnnotations', session, 'function') &&
 			session.getAnnotations().filter((err) => err.type === 'error');
 
-		if (errs.length) {
+		if (errs && errs.length) {
 			isValid = false;
 			errors[editorKey] = errs;
 		}
@@ -30,34 +28,27 @@ function isEditorFieldsValid() {
 function onErrorModalClose() {
 	errorModal.classList.add('closed');
 	modalBg.classList.add('closed');
-
-	errorDetailContainer.replaceChildren(...[]);
+	errorDetailContainer.innerHTML = '';
 }
 
 function showErrorModal(errors = {}) {
-	const errorChildren = [];
+	const fragment = document.createDocumentFragment();
 
 	for (const editorKey in errors) {
 		const errs = errors[editorKey];
 
-		const errorDetail = document.createElement('div');
-		errorDetail.className = 'error-detail';
+		const errorDetail = createElement('div', 'error-detail');
+		const editorKeyText = createElement('b', null, `${editorKey} :`);
 
-		const editorKeyText = document.createElement('b');
-		editorKeyText.innerText = `${editorKey} :`;
-
-		const errMessages = errs.map((err) => {
-			const errorText = document.createElement('p');
-			errorText.className = 'error-message';
-			errorText.innerText = err.text;
-			return errorText;
+		errorDetail.appendChild(editorKeyText);
+		errs.forEach((err) => {
+			errorDetail.appendChild(createElement('p', 'error-message', err.text));
 		});
 
-		errorDetail.append(editorKeyText, ...errMessages);
-		errorChildren.push(errorDetail);
+		fragment.appendChild(errorDetail);
 	}
 
-	errorDetailContainer.replaceChildren(...errorChildren);
+	errorDetailContainer.appendChild(fragment);
 	errorModal.classList.remove('closed');
 	modalBg.classList.remove('closed');
 }

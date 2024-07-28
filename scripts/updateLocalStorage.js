@@ -1,32 +1,34 @@
-// Your script logic here
-async function updateLocalStorage(dataKey, data) {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+const updateLocalStorageInTab = (dataKey, data) => {
+	try {
+		localStorage.setItem(dataKey, JSON.stringify(data));
+		return true;
+	} catch (error) {
+		console.error('Error updating localStorage:', error);
+		return false;
+	}
+};
 
-    const results = await executeScriptAsync({
-        tabId: tab.id,
-        func: (dataKey, data) => {
-            try {
-                localStorage.setItem(dataKey, JSON.stringify(data));
-                return true;
-            } catch (error) {
-                console.error(error);
-                return false;
-            }
-        },
-        args: [dataKey, data],
-    });
+const indicateUserAboutSaveStatus = (isSuccess) => {
+	const className = isSuccess ? 'save-success' : 'save-fail';
+	saveToLocalStorageBtnContainer.classList.add(className);
+	setTimeout(() => {
+		saveToLocalStorageBtnContainer.classList.remove(className);
+	}, 1000);
+};
 
-    const isSuccess = results[0].result;
+const updateLocalStorage = async (dataKey, data) => {
+	try {
+		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+		const results = await executeScriptAsync({
+			tabId: tab.id,
+			func: updateLocalStorageInTab,
+			args: [dataKey, data],
+		});
 
-    if(isSuccess) {
-        saveToLocalStorageBtnContainer.classList.add('save-success');
-        setTimeout(() => {
-            saveToLocalStorageBtnContainer.classList.remove('save-success');
-        }, 1000)
-    } else {
-        saveToLocalStorageBtnContainer.classList.add('save-fail');
-        setTimeout(() => {
-            saveToLocalStorageBtnContainer.classList.remove('save-fail');
-        }, 1000)
-    }
-}
+		const isSuccess = results[0].result;
+		indicateUserAboutSaveStatus(isSuccess);
+	} catch (error) {
+		console.error('Error executing script:', error);
+		indicateUserAboutSaveStatus(false);
+	}
+};

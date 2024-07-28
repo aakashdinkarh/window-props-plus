@@ -16,24 +16,23 @@
 		}
 	}
 
+	const evaluators = {
+		object: (data, propertyPath) =>
+			data.value.reduce((obj, childData) => {
+				obj[childData.key] = evaluateData(childData, propertyPath);
+				return obj;
+			}, {}),
+		function: (data, propertyPath) => handleException(data.type, propertyPath, () => new Function(...data.value)),
+		string: (data, propertyPath) => handleException(data.type, propertyPath, () => String(data.value[0])),
+		number: (data, propertyPath) => handleException(data.type, propertyPath, () => Number(data.value[0])),
+		boolean: (data, propertyPath) => handleException(data.type, propertyPath, () => JSON.parse(data.value[0])),
+		array: (data, propertyPath) => handleException(data.type, propertyPath, () => JSON.parse(data.value[0])),
+	};
+
 	function evaluateData(data, parentPath = '') {
 		const propertyPath = parentPath ? `${parentPath}${PROPERTY_PATH_SEPARATOR}${data.key}` : data.key;
 
-
-		const evaluators = {
-			object: () =>
-				data.value.reduce((obj, childData) => {
-					obj[childData.key] = evaluateData(childData, propertyPath);
-					return obj;
-				}, {}),
-			function: () => handleException(data.type, propertyPath, () => new Function(...data.value)),
-			string: () => handleException(data.type, propertyPath, () => String(data.value[0])),
-			number: () => handleException(data.type, propertyPath, () => Number(data.value[0])),
-			boolean: () => handleException(data.type, propertyPath, () => Boolean(data.value[0])),
-			array: () => handleException(data.type, propertyPath, () => Array(data.value[0])),
-		};
-
-		return evaluators[data.type] ? evaluators[data.type]() : undefined;
+		return evaluators[data.type] ? evaluators[data.type](data, propertyPath) : undefined;
 	}
 
 	function isRootWindowObjectValid(data) {

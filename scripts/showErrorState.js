@@ -1,15 +1,11 @@
+// this messaged can be changes from evaluateLocalStorage function
 let errorMessage = 'Seems like there is something wrong with your data saved for last time.';
-errorMessage += '\n Please refresh and accept the default data from prompt to continue.';
+let subErrorMessage = 'Please refresh and accept the default data from prompt to continue.'
 
 function showErrorState() {
-	const errorHeadingElement = document.createElement('h2');
-	const errorElement = document.createElement('p');
+	const errorHeadingElement = createElement('h2', 'main-error-heading', 'Something went wrong!');
+	const errorElement = createElement('p', 'main-error-message', errorMessage);
+	const subErrorElement = createElement('p', 'main-error-message', subErrorMessage);
 
-	errorHeadingElement.className = 'main-error-heading';
-	errorElement.className = 'main-error-message';
-
-	errorHeadingElement.textContent = 'Something went wrong!';
-	errorElement.textContent = errorMessage;
-
-	mainElement.append(errorHeadingElement, errorElement);
+	mainElement.append(errorHeadingElement, errorElement, subErrorElement);
 }

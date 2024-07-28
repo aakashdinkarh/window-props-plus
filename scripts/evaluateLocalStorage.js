@@ -1,81 +1,73 @@
-const defaultData = {
-    type: 'object',
-    key: 'window',
-    value: []
+const DEFAULT_DATA = {
+	type: 'object',
+	key: 'window',
+	value: [],
 };
 
-function executeScriptAsync({ tabId, func, args }) {
-    return new Promise((resolve, reject) => {
-      chrome.scripting.executeScript(
-        {
-          target: { tabId },
-          func,
-          args,
-        },
-        (results) => {
-          if (chrome.runtime.lastError) {
-            return reject(chrome.runtime.lastError);
-          }
-          resolve(results);
-        }
-      );
-    });
-}
+const executeScriptAsync = ({ tabId, func, args }) => {
+	return new Promise((resolve, reject) => {
+		chrome.scripting.executeScript(
+			{
+				target: { tabId },
+				func,
+				args,
+			},
+			(results) => {
+				if (chrome.runtime.lastError) {
+					reject(chrome.runtime.lastError);
+				} else {
+					resolve(results);
+				}
+			}
+		);
+	});
+};
 
 function evalIsDataValid(data) {
-    const isDataValid = data && typeof data === 'object' && Object.keys(data).length !== 0;
+	const isDataValid = data && typeof data === 'object' && Object.keys(data).length !== 0;
 
-    const isRootKeyWindow = isDataValid && data.key === 'window' && data.type === 'object';
+	const isRootKeyWindow = isDataValid && data.key === 'window' && data.type === 'object';
 
-    return isDataValid && isRootKeyWindow;
+	return isDataValid && isRootKeyWindow;
 }
 
-function handleConfirmation() {
-    const agree = confirm('Something went wrong with data, do you want to continue with default data?');
+const handleConfirmation = () => {
+	const agree = confirm('Something went wrong with data. Do you want to continue with default data?');
+	if (agree) {
+		localStorage.setItem(LOCAL_STORAGE_DATA_KEY, JSON.stringify(DEFAULT_DATA));
+	}
+	return agree;
+};
 
-    if (agree) {
-        localStorage.setItem(LOCAL_STORAGE_DATA_KEY, JSON.stringify(defaultData));
-    }
-    return agree;
-}
+const evaluateLocalStorage = async () => {
+	try {
+		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-async function evaluateLocalStorage() {
-    try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+		const results = await executeScriptAsync({
+			tabId: tab.id,
+			func: (key) => window.localStorage.getItem(key),
+			args: [LOCAL_STORAGE_DATA_KEY],
+		});
 
-        const results = await executeScriptAsync({
-            tabId: tab.id,
-            func: (key) => {
-                return window.localStorage.getItem(key);
-            },
-            args: [LOCAL_STORAGE_DATA_KEY]
-        });
+		const localStorageData = results[0].result;
 
-        const localStorageData = results[0].result;
+		if (!localStorageData) return DEFAULT_DATA;
 
-        if (!localStorageData) return defaultData;
+		const parsedData = JSON.parse(localStorageData);
 
-        const parsedData = JSON.parse(localStorageData);
-        const isDataValid = evalIsDataValid(parsedData);
+		if (evalIsDataValid(parsedData)) return parsedData;
+		return handleConfirmation() ? DEFAULT_DATA : null;
+	} catch (e) {
+		console.error(e);
 
-        if (isDataValid) return parsedData;
+		if (e.message?.includes('Cannot access')) {
+			errorMessage = e.message;
+			subErrorMessage = 'Cannot access this website, NOT ALLOWED';
+			throw new Error(e.message);
+		}
 
-        const agree = handleConfirmation();
-        if (agree) return defaultData;
+		if (e.message) alert(e.message);
 
-        return null;
-    } catch (e) {
-        console.error(e);
-        if(typeof e.message === 'string' && e.message.includes('Cannot access')) {
-
-          errorMessage = 'Cannot access this website, NOT ALLOWED'
-          return null;
-        }
-        if(e.message) alert(e.message);
-
-        const agree = handleConfirmation();
-        if (agree) return defaultData;
-
-        return null
-    }
-}
+		return handleConfirmation() ? DEFAULT_DATA : null;
+	}
+};
