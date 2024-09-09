@@ -199,8 +199,17 @@ const renderDataTypeFunctions = {
 			)
 		);
 
+		const referencedFunctionData = {
+			...data,
+			get value() {
+				return data.value;
+			},
+			set value(newVal) {
+				data.value[data.value.length - 1] = newVal;
+			},
+		};
 		const aceEditor = createElement('div', 'ace-editor', functionBody);
-		embedAceEditor({ element: aceEditor, data, propertyPath });
+		embedAceEditor({ element: aceEditor, data: referencedFunctionData, propertyPath });
 
 		return [...argumentElements, aceEditor];
 	},
