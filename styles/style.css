@@ -11,21 +11,31 @@ html {
 	--color-warn: #fbc02d;
 	--color-dialog-bg: #c2d8ff;
 	--color-dialog-border: #ccc;
+	--color-box-shadow-popover: rgba(0, 0, 0, 0.1);
 }
 
 body {
 	margin: 0;
 	font-family: sans-serif;
-	background-color: #fff;
+	background-color: var(--color-white);
 	position: relative;
 	min-width: 500px;
+	max-width: 500px;
 	height: 300px;
 	padding: 8px;
 	padding-bottom: 0;
 	overflow: auto;
 }
+
 button {
 	cursor: pointer;
+}
+
+h2 {
+	text-align: center;
+	color: var(--color-blue2);
+	margin: 4px 0 12px 0;
+	font-size: 20px;
 }
 
 main section {
@@ -116,8 +126,8 @@ dialog.open {
 
 .save-to-local-storage-btn-container {
 	position: absolute;
-	right: 20px;
-	top: 20px;
+	right: 10px;
+	top: 10px;
 	overflow: hidden;
 	border-radius: 4px;
 }
@@ -127,4 +137,18 @@ dialog.open {
 }
 .main-error-message {
 	color: var(--color-error);
+}
+
+.readme-info {
+	position: absolute;
+	top: 14px;
+	right: 70px;
+}
+
+.readme-info svg {
+	fill: #6e6e6e;
+	transition: fill 0.2s;
+}
+.readme-info:hover svg {
+	fill: #282a36;
 }

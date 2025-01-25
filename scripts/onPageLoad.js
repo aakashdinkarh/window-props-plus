@@ -3,6 +3,7 @@ import { evaluateLocalStorage } from './evaluateLocalStorage.js';
 import { renderDataStructure } from './renderDataStructure.js';
 import { showErrorState } from './showErrorState.js';
 import { updateLocalStorage } from './updateLocalStorage.js';
+import { initiatePopover } from './popover.js';
 
 export const mainElement = document.querySelector('main');
 export const dialogBox = document.querySelector('.dialog');
@@ -45,6 +46,11 @@ const eventListenerForSaveButton = (data) => {
 errorModalCloseButton.addEventListener('click', onErrorModalClose);
 addPropertyForm.addEventListener('reset', closeDialogBox);
 document.addEventListener('click', handleClickOutside);
+
+// init Info Popover
+try {
+	initiatePopover();
+} catch {}
 
 // Initialize application
 (async () => {
