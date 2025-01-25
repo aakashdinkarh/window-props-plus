@@ -126,8 +126,8 @@ dialog.open {
 
 .save-to-local-storage-btn-container {
 	position: absolute;
-	right: 10px;
-	top: 10px;
+	right: 20px;
+	top: 58px;
 	overflow: hidden;
 	border-radius: 4px;
 }
@@ -142,13 +142,9 @@ dialog.open {
 .readme-info {
 	position: absolute;
 	top: 14px;
-	right: 70px;
+	right: 10px;
 }
 
 .readme-info svg {
-	fill: #6e6e6e;
-	transition: fill 0.2s;
-}
-.readme-info:hover svg {
 	fill: #282a36;
 }
