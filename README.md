@@ -1,4 +1,4 @@
-# Custom Properties to Window Chrome Extension
+# Window Props Plus [Chrome Extension]
 
 ## Overview
 
@@ -20,10 +20,15 @@ This Chrome extension allows users to add custom properties to the global window
 4. Click "Load unpacked" and select the directory containing the extension files
 
 ## Usage
+1. Click on the extension icon in your Chrome extension toolbar to open the UI, you will see the following **Initial Default View**.
 
-1. Click on the extension icon in your Chrome toolbar to open the UI
-2. Use the "+" button to add new properties
+
+2. Use the "+" button, next to property name, to add new property or method.
+
+
 3. Select the property type and enter the property name
+
+
 4. For complex types like objects and functions, use the provided editor to define the structure or code
 5. Use the action buttons to edit, remove, or add child properties as needed
 6. Your custom properties will be available on the window object after saving changes and reloading the page
