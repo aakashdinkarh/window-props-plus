@@ -1,4 +1,4 @@
-# Custom Properties to Window Chrome Extension
+# Window Props Plus [Chrome Extension]
 
 ## Overview
 
@@ -8,6 +8,7 @@ This Chrome extension allows users to add custom properties to the global window
 
 - Add custom properties of various types (string, number, boolean, array, object, function) to the window object
 - Intuitive UI for easy property management
+- Syntax highlighting helps identify and reduce errors in property values.
 - Updates to the window object upon saving changes and page reload
 - Persistent storage of custom properties across page reloads
 - Error handling and logging for robustness
@@ -20,13 +21,18 @@ This Chrome extension allows users to add custom properties to the global window
 4. Click "Load unpacked" and select the directory containing the extension files
 
 ## Usage
+1. Click on the extension icon in your Chrome extension toolbar to open the UI, you will see the following **Initial Default View**.
+<img width="517" alt="Screenshot 2025-01-25 at 6 17 07 PM" src="https://github.com/user-attachments/assets/d89ca2b5-6ee7-4304-8fac-208afa928f3c" />
 
-1. Click on the extension icon in your Chrome toolbar to open the UI
-2. Use the "+" button to add new properties
-3. Select the property type and enter the property name
-4. For complex types like objects and functions, use the provided editor to define the structure or code
-5. Use the action buttons to edit, remove, or add child properties as needed
-6. Your custom properties will be available on the window object after saving changes and reloading the page
+2. Click on the "+" button, next to property name, to add new property or method.
+- Select the property type and enter the property name
+<img width="517" alt="Screenshot 2025-01-25 at 6 19 02 PM" src="https://github.com/user-attachments/assets/9b101ff3-ea1e-4b53-be3d-9fea8f5937a9" />
+
+3. For each property type (except object), there is a default value provided for convenience, update the value as per your requirement.
+<img width="517" alt="Screenshot 2025-01-25 at 6 39 34 PM" src="https://github.com/user-attachments/assets/de2f1c95-0bfb-46a8-9e61-be2db914622d" />
+
+4. The properties added would be available on the window object after saving the changes and reloading the page.
+<img width="316" alt="Screenshot 2025-01-25 at 6 42 42 PM" src="https://github.com/user-attachments/assets/7871ccde-73ae-49e8-bc59-a64938a91517" />
 
 ## Technical Details
 
