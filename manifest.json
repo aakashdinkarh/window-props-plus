@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Window Props Plus",
-	"version": "1.1",
+	"version": "1.2",
 	"description": "Add custom properties to the window object with an intuitive UI. Save changes and refresh the page to apply the new properties.",
 	"permissions": ["scripting"],
 	"action": {
