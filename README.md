@@ -15,10 +15,29 @@ This Chrome extension allows users to add custom properties to the global window
 
 ## Installation
 
+### For Development
+
 1. Clone this repository or download the source code
-2. Open Chrome and navigate to `chrome://extensions`
-3. Enable "Developer mode" in the top right corner
-4. Click "Load unpacked" and select the directory containing the extension files
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Build the extension:
+   ```bash
+   npm run build
+   ```
+4. Open Chrome and navigate to `chrome://extensions`
+5. Enable "Developer mode" in the top right corner
+6. Click "Load unpacked" and select the `dist` directory
+
+### Development Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Build in watch mode for development |
+| `npm run build` | Production build to `dist/` folder |
+| `npm run build:zip` | Build and create a zip file for Chrome Web Store upload |
+| `npm run clean` | Remove the `dist/` folder |
 
 ## Usage
 1. Click on the extension icon in your Chrome extension toolbar to open the UI, you will see the following **Initial Default View**.
