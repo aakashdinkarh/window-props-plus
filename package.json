@@ -1,0 +1,28 @@
+{
+    "name": "window-props-plus",
+    "version": "1.1.0",
+    "description": "Chrome extension to add custom properties to the window object with an intuitive UI",
+    "type": "module",
+    "scripts": {
+        "dev": "vite build --watch --mode development",
+        "build": "vite build",
+        "build:zip": "npm run build && node scripts-build/zip.js",
+        "clean": "rm -rf dist"
+    },
+    "devDependencies": {
+        "vite": "5.4.0",
+        "archiver": "7.0.0"
+    },
+    "keywords": [
+        "chrome-extension",
+        "window",
+        "properties",
+        "developer-tools"
+    ],
+    "author": "",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aakashdinkarh/window-props-plus"
+    }
+}
