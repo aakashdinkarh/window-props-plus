@@ -56,7 +56,7 @@ const memoizedEditorOptions = (() => {
 		enableBasicAutocompletion: true,
 		enableLiveAutocompletion: true,
 		enableSnippets: true,
-		maxLines: 4,
+		maxLines: 15,
 		minLines: 2,
 		highlightActiveLine: true,
 		highlightGutterLine: true,
