@@ -9,7 +9,7 @@ This Chrome extension allows users to add custom properties to the global window
 - Add custom properties of various types (string, number, boolean, array, object, function) to the window object
 - Intuitive UI for easy property management
 - Syntax highlighting helps identify and reduce errors in property values.
-- Updates to the window object upon saving changes and page reload
+- Instant updates to the window object upon saving changes (no page reload required)
 - Persistent storage of custom properties across page reloads
 - Error handling and logging for robustness
 
@@ -50,7 +50,7 @@ This Chrome extension allows users to add custom properties to the global window
 3. For each property type (except object), there is a default value provided for convenience, update the value as per your requirement.
 <img width="517" alt="Screenshot 2025-01-25 at 6 39 34 PM" src="https://github.com/user-attachments/assets/de2f1c95-0bfb-46a8-9e61-be2db914622d" />
 
-4. The properties added would be available on the window object after saving the changes and reloading the page.
+4. The properties added would be available on the window object immediately after saving the changes (no page reload required).
 <img width="316" alt="Screenshot 2025-01-25 at 6 42 42 PM" src="https://github.com/user-attachments/assets/7871ccde-73ae-49e8-bc59-a64938a91517" />
 
 ## Technical Details

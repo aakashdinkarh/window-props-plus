@@ -22,14 +22,26 @@ const indicateUserAboutSaveStatus = (isSuccess) => {
 export const updateLocalStorage = async (dataKey, data) => {
 	try {
 		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-		const results = await executeScriptAsync({
+
+		// First, save to localStorage
+		const saveResults = await executeScriptAsync({
 			tabId: tab.id,
 			func: updateLocalStorageInTab,
 			args: [dataKey, data],
 		});
 
-		const isSuccess = results[0].result;
-		indicateUserAboutSaveStatus(isSuccess);
+		const isSaveSuccess = saveResults[0].result;
+
+		if (isSaveSuccess) {
+			// Re-run the existing content script to apply properties to window
+			await chrome.scripting.executeScript({
+				target: { tabId: tab.id },
+				files: ['scripts/contentScripts/attachDataToWindow.js'],
+				world: 'MAIN',
+			});
+		}
+
+		indicateUserAboutSaveStatus(isSaveSuccess);
 	} catch (error) {
 		console.error('Error executing script:', error);
 		indicateUserAboutSaveStatus(false);
